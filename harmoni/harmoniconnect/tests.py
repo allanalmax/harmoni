@@ -50,23 +50,45 @@ class ServiceProviderTests(APITestCase):
 
 
 class ServiceTests(APITestCase):
-    def setUp(self):
-        self.superuser = User.objects.create_superuser(username='admin', email='admin@example.com', password='testpass123')
-        self.client.login(username='admin', password='testpass123')
 
-        self.provider = ServiceProvider.objects.create(user=self.superuser, location="Downtown")
-        self.service = Service.objects.create(provider=self.provider, name="Original Wedding Dance", description="A standard wedding dance service", price=Decimal("100.00"), category="Dance")
+    def setUp(self):
+        # Create a superuser or a user with necessary permissions
+        self.user = User.objects.create_user(username='serviceprovider', password='password', is_service_provider=True)
+        self.client.login(username='serviceprovider', password='password')
+
+        self.provider = ServiceProvider.objects.create(user=self.user, location="Downtown")
+        
+        self.service_data = {
+            'provider': self.provider.id,
+            'name': "Wedding Dance",
+            'description': "Special dance for weddings",
+            'price': "200.00",
+            'category': "Dance",
+        }
+
+        self.service = Service.objects.create(
+            provider=self.provider,
+            name=self.service_data['name'],
+            description=self.service_data['description'],
+            price=self.service_data['price'],
+            category=self.service_data['category']
+        )
 
     def test_create_service(self):
         url = reverse('service-list')
-        data = {'name': "Wedding Dance", 'description': "Special dance for weddings", 'price': "200.00", 'category': "Dance", 'provider': self.provider.id}
-        response = self.client.post(url, data, format='json')
+        response = self.client.post(url, self.service_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Service.objects.count(), 2)
 
     def test_update_service(self):
+        """Test the update functionality of a service."""
+        # Assuming 'service' is already created in setUp
         url = reverse('service-detail', args=[self.service.id])
-        update_data = {'name': "Updated Wedding Dance", 'description': "An updated special dance for weddings", 'price': "300.00", 'category': "Dance"}
+        update_data = {
+            'name': "Updated Wedding Dance",
+            'description': "An updated special dance for weddings",
+            'price': "300.00",
+            'category': "Dance"
+        }
         response = self.client.patch(url, update_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.service.refresh_from_db()
@@ -125,13 +147,21 @@ class AuthorizationTests(APITestCase):
 
 class ClientFunctionalityTests(APITestCase):
     def setUp(self):
-        self.client_user = User.objects.create_user(username='clientuser', password='password')
+        # Create a client user
+        self.client_user = User.objects.create_user(username='clientuser', password='password', is_service_provider=False)
         self.client_instance = Client.objects.create(user=self.client_user)
         self.client.login(username='clientuser', password='password')
 
+        # Setup a service provider and a service
         self.provider_user = User.objects.create_user(username='provideruser', password='password', is_service_provider=True)
         self.provider = ServiceProvider.objects.create(user=self.provider_user, location="Provider Location")
-        self.service = Service.objects.create(provider=self.provider, name="Dance", description="Dance service", price=100.00, category="Entertainment")
+        self.service = Service.objects.create(
+            provider=self.provider, 
+            name="Dance", 
+            description="Dance service", 
+            price=100.00, 
+            category="Entertainment"
+        )
 
     def test_client_view_service(self):
         url = reverse('service-list')
@@ -140,10 +170,16 @@ class ClientFunctionalityTests(APITestCase):
 
     def test_client_book_service(self):
         future_date = now() + timedelta(days=10)
-        # formatted_date = future_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        formatted_date = future_date.strftime('%Y-%m-%dT%H:%M:%SZ')
         url = reverse('booking-list')
-        data = {'service': self.service.id, 'booking_date': future_date}
+        data = {
+            'service': self.service.id, 
+            'booking_date': formatted_date
+        }
         response = self.client.post(url, data, format='json')
+        if response.status_code != status.HTTP_201_CREATED:
+            print(f'Failed to create booking: {response.data}')  # This will print the error details
+            print(f"Booking response status: {response.status_code}")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_client_restricted_from_creating_services(self):

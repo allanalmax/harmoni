@@ -37,6 +37,7 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
         fields = '__all__'
+        extra_kwargs = {'client': {'required': False}}
         read_only_fields = ['status']
 
     def get_service_details(self, obj):
@@ -50,6 +51,12 @@ class BookingSerializer(serializers.ModelSerializer):
             serializer = ServiceProviderSerializer(obj.service.provider)
             return serializer.data
         return None
+    
+    def validate_client(self, value):
+        user = self.context['request'].user
+        if not user.is_staff and value != user.client:
+            raise serializers.ValidationError("You do not have permission to create a booking for this client.")
+        return value
 
     def validate(self, data):
         if 'booking_date' in data and data['booking_date'] < timezone.now():
@@ -58,9 +65,8 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         request = self.context.get('request')
-        if not hasattr(request.user, 'client'):
-            raise ValidationError("This user does not have a client profile.")
-        validated_data['client'] = request.user.client
+        if 'client' not in validated_data:
+            validated_data['client'] = self.context['request'].user.client
         return super().create(validated_data)
 
 class ReviewSerializer(serializers.ModelSerializer):
