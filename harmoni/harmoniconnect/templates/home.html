@@ -1,57 +1,122 @@
-{% extends 'base_generic.html' %}
+{% load static %}  <!-- Static files tag to include CSS and JavaScript -->
 
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dancer Groups</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+</head>
+<body>
 
-{% block title %}Home{% endblock %}
+<header class="main-header">
+  <div class="container">
+    <nav class="navigation">
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#dashboard">My Dashboard</a></li>
+        <li><a href="#support">Support</a></li>
+      </ul>
+      <div class="search-bar">
+        <form action="{% url 'search_view' %}" method="get">
+          <input type="search" id="search" name="query" placeholder="Search">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+  </div>
+</header>
 
-{% block content %}
-<link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<main class="container">
+  <aside class="filter-section">
+    <form id="filter-form" action="{% url 'filter_view' %}" method="get">
+      {% csrf_token %} <!-- Assuming CSRF token is required for form submission -->
+      <div class="form-group">
+        <label for="budget">Budget*</label>
+        <select id="budget" name="budget">
+          <option value="1M-5M">1,000,000 - 5,000,000</option>
+          <!-- Add more options here -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="availability">Availability*</label>
+        <input type="date" id="availability" name="availability">
+      </div>
+      <div class="form-group">
+        <label for="services">Services*</label>
+        <select id="services" name="services">
+          <option value="dancers">Dancers</option>
+          <!-- Add more options here -->
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ratings">Ratings*</label>
+        <select id="ratings" name="ratings">
+          <option value="5">5 star</option>
+          <!-- Add more options here -->
+        </select>
+      </div>
+      <button type="submit" class="filter-button">Apply Filters</button>
+    </form>
+  </aside>
 
-<div class="v12_102">
-    <div class="v12_116">
-        <span class="v12_118">Features</span>
-        <span class="v12_120">My Dashboard</span>
-        <span class="v12_121">Support</span>
-        <span class="v12_134">Search</span>
+  <section class="dancer-listings">
+    {% for dancer in dancers %}
+    <article class="dancer-item">
+      <img src="{{ dancer.image_url }}" alt="{{ dancer.name }}">
+      <div class="dancer-info">
+        <h3>{{ dancer.name }}</h3>
+        <p class="description">{{ dancer.description }}</p>
+        <a href="{% url 'dancer_detail' dancer.id %}" class="details-button">Details</a>
+      </div>
+    </article>
+    {% empty %}
+    <p>No dancers found.</p>
+    {% endfor %}
+  </section>
+
+  <nav class="pagination">
+    <!-- Pagination Links -->
+    {% if dancers.has_previous %}
+    <a href="?page={{ dancers.previous_page_number }}" aria-label="Previous">&lt;</a>
+    {% endif %}
+    {% for num in dancers.paginator.page_range %}
+      <a href="?page={{ num }}" {% if num == dancers.number %}class="active"{% endif %}>{{ num }}</a>
+    {% endfor %}
+    {% if dancers.has_next %}
+      <a href="?page={{ dancers.next_page_number }}" aria-label="Next">&gt;</a>
+    {% endif %}
+  </nav>
+</main>
+
+<footer class="main-footer">
+  <div class="container">
+    <div class="footer-content">
+      <section class="footer-section">
+        <h4>Community</h4>
+        <ul>
+          <li><a href="#featured-events">Featured events</a></li>
+          <li><a href="#promotions">Promotions</a></li>
+        </ul>
+      </section>
+      <section class="footer-section">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about-us">About us</a></li>
+          <li><a href="#contact">Contact us</a></li>
+          <li><a href="#history">History</a></li>
+        </ul>
+      </section>
+      <div class="footer-auth">
+        <button id="register-button">Register</button>
+        <button id="login-button">Log in</button>
+      </div>
     </div>
-    <div class="v12_140">
-        <span class="v12_143">© Photo, Inc. 2024, Making Celebrations Easier</span>
-        <span class="v12_144">Follow us:</span>
-        <span class="v12_145">Community</span>
-        <span class="v12_146">Featured events Promotions</span>
-        <span class="v12_147">Company</span>
-        <span class="v12_148">About us Contact us History</span>
-    </div>
-    <div class="v12_175">
-        <span class="v12_176">What We Offer</span>
-        <div class="v12_182">
-            <span class="v12_183">Effortless Client Connection</span>
-            <span class="v12_184">Ease with which providers can connect with potential clients looking for their specific services</span>
-        </div>
-        <div class="v12_185">
-            <span class="v12_186">Provider Spotlight</span>
-            <span class="v12_187">Feature positive reviews of service providers by clients who have successfully used their services, ranking you higher to other clients</span>
-        </div>
-        <div class="v12_188">
-            <span class="v12_189">Provider Growth Suite</span>
-            <span class="v12_190">Helping service providers expand their reach and book more events through our platform</span>
-        </div>
-    </div>
-    <div class="v12_212">
-        <span class="v12_213">Hear from those that have experienced us</span>
-        <div class="v12_214">
-            <span class="v12_215">Angel Anderson</span>
-            <span class="v12_216">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem.</span>
-        </div>
-        <div class="v12_220">
-            <span class="v12_223">John Doe</span>
-            <span class="v12_224">Amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</span>
-        </div>
-        <div class="v12_225">
-            <span class="v12_228">Diana Smith</span>
-            <span class="v12_229">Consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor.</span>
-        </div>
-    </div>
-</div>
-{% endblock %}
+  </div>
+</footer>
+
+<script src="{% static 'script.js' %}"></script>
+
+</body>
+</html>

@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models import Avg
 
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=15, blank=True, null=True)
@@ -9,6 +12,7 @@ class CustomUser(AbstractUser):
 class ServiceProvider(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='service_provider')
     location = models.CharField(max_length=255)
+    average_rating = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
 
     def __str__(self):
         return self.user.username
@@ -57,6 +61,13 @@ class Review(models.Model):
     def __str__(self):
         return f"Review by {self.booking.client.user.username} for Booking ID {self.booking.id}"
 
+@receiver(post_save, sender=Review)
+def update_provider_rating(sender, instance, **kwargs):
+    provider = instance.booking.service.provider
+    new_rating = Review.objects.filter(booking__service__provider=provider).aggregate(Avg('rating'))['rating__avg']
+    provider.average_rating = new_rating
+    provider.save()
+
 class Payment(models.Model):
     PAYMENT_STATUS = [
         ('processed', 'Processed'),
@@ -86,3 +97,21 @@ class EventDetails(models.Model):
 
     def __str__(self):
         return f"Event on {self.event_date} at {self.location}"
+
+class Availability(models.Model):
+    provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE, related_name='availabilities')
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"Available from {self.start_time} to {self.end_time} for {self.provider.user.username}"
+
+@receiver(post_save, sender=Review)
+def update_provider_rating(sender, instance, **kwargs):
+    """
+    Update the ServiceProvider's average rating when a new review is added or updated.
+    """
+    provider = instance.booking.service.provider
+    new_rating = Review.objects.filter(booking__service__provider=provider).aggregate(Avg('rating'))['rating__avg']
+    provider.average_rating = new_rating or 0.0  # Reset to 0.0 if no ratings
+    provider.save()

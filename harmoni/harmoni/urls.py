@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from harmoniconnect import views
-from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, BookingViewSet, ReviewViewSet, SignUpView
+from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, BookingViewSet, ReviewViewSet, SignUpView, ServiceSearchViewSet
 from django.contrib.auth import views as auth_views
 
 router = routers.DefaultRouter()
@@ -12,6 +12,7 @@ router.register(r'services', ServiceViewSet)
 router.register(r'serviceproviders', ServiceProviderViewSet)
 router.register(r'bookings', BookingViewSet)
 router.register(r'reviews', ReviewViewSet)
+router.register(r'services/search', ServiceSearchViewSet, basename='service-search')
 
 urlpatterns = [
     path("admin/", admin.site.urls),

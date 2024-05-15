@@ -12,6 +12,8 @@ from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSe
 from django.urls import reverse_lazy
 from django.views import generic
 from .forms import UserRegisterForm
+from datetime import datetime
+from django.db.models import Q
 
 # ViewSets
 class CustomPermission(permissions.BasePermission):
@@ -31,6 +33,60 @@ class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all().select_related('provider')
     serializer_class = ServiceSerializer
     permission_classes = [CustomPermission]
+
+class ServiceSearchViewSet(viewsets.ViewSet):
+    """
+    A ViewSet for searching services based on various criteria like category, budget, and availability.
+    """
+
+    def list(self, request):
+        queryset = Service.objects.all()
+        category = request.query_params.get('category', None)
+        budget = request.query_params.get('budget', None)
+        start_time = request.query_params.get('start_time', None)
+        end_time = request.query_params.get('end_time', None)
+
+        if category:
+            queryset = queryset.filter(category=category)
+        if budget:
+            queryset = queryset.filter(price__lte=budget)
+        if start_time and end_time:
+            start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+            end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
+            booked_services = Booking.objects.filter(
+                booking_date__range=(start_time, end_time)
+            ).values_list('service', flat=True)
+            queryset = queryset.exclude(id__in=booked_services)
+
+        serializer = ServiceSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], url_path='recommendations', url_name='service-search-recommendations')
+    def recommendation_list(self, request):
+        budget = request.query_params.get('budget', None)
+        category = request.query_params.get('category', None)
+        min_rating = request.query_params.get('min_rating', None)  # New parameter for minimum rating
+        availability_start = request.query_params.get('availability_start', None)
+        availability_end = request.query_params.get('availability_end', None)
+
+        query = Q()
+        if budget:
+            query &= Q(services__price__lte=budget)
+        if category:
+            query &= Q(services__category=category)
+        if min_rating:
+            query &= Q(average_rating__gte=min_rating)  # Ensure the service provider's rating is considered
+        if availability_start and availability_end:
+            availability_start = datetime.strptime(availability_start, '%Y-%m-%dT%H:%M:%S')
+            availability_end = datetime.strptime(availability_end, '%Y-%m-%dT%H:%M:%S')
+            query &= Q(services__provider__availabilities__start_time__gte=availability_start,
+                    services__provider__availabilities__end_time__lte=availability_end)
+
+        providers = ServiceProvider.objects.filter(query).distinct()
+        providers = providers.order_by('-average_rating')  # Sort providers by rating in descending order
+        serializer = ServiceProviderSerializer(providers, many=True, context={'request': request})
+
+        return Response(serializer.data)
 
 
 class ServiceProviderViewSet(viewsets.ModelViewSet):
