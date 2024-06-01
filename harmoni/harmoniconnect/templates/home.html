@@ -1,122 +1,114 @@
-{% load static %}  <!-- Static files tag to include CSS and JavaScript -->
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dancer Groups</title>
-  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <title>Photo</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
 <body>
 
 <header class="main-header">
   <div class="container">
+    <img src="{% static 'logo.png' %}" alt="Logo" class="logo">
     <nav class="navigation">
       <ul>
         <li><a href="#features">Features</a></li>
         <li><a href="#dashboard">My Dashboard</a></li>
         <li><a href="#support">Support</a></li>
+        <li><a href="#search">Search</a></li>
       </ul>
-      <div class="search-bar">
-        <form action="{% url 'search_view' %}" method="get">
-          <input type="search" id="search" name="query" placeholder="Search">
-          <button type="submit">Search</button>
-        </form>
-      </div>
     </nav>
   </div>
 </header>
 
-<main class="container">
-  <aside class="filter-section">
-    <form id="filter-form" action="{% url 'filter_view' %}" method="get">
-      {% csrf_token %} <!-- Assuming CSRF token is required for form submission -->
-      <div class="form-group">
-        <label for="budget">Budget*</label>
-        <select id="budget" name="budget">
-          <option value="1M-5M">1,000,000 - 5,000,000</option>
-          <!-- Add more options here -->
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="availability">Availability*</label>
-        <input type="date" id="availability" name="availability">
-      </div>
-      <div class="form-group">
-        <label for="services">Services*</label>
-        <select id="services" name="services">
-          <option value="dancers">Dancers</option>
-          <!-- Add more options here -->
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="ratings">Ratings*</label>
-        <select id="ratings" name="ratings">
-          <option value="5">5 star</option>
-          <!-- Add more options here -->
-        </select>
-      </div>
-      <button type="submit" class="filter-button">Apply Filters</button>
-    </form>
-  </aside>
+<section class="hero">
+  <img src="{% static 'media/fireworks.jpeg' %}" alt="Fireworks">
+  <h1>Making Celebrations Easier</h1>
+</section>
 
-  <section class="dancer-listings">
-    {% for dancer in dancers %}
-    <article class="dancer-item">
-      <img src="{{ dancer.image_url }}" alt="{{ dancer.name }}">
-      <div class="dancer-info">
-        <h3>{{ dancer.name }}</h3>
-        <p class="description">{{ dancer.description }}</p>
-        <a href="{% url 'dancer_detail' dancer.id %}" class="details-button">Details</a>
-      </div>
-    </article>
-    {% empty %}
-    <p>No dancers found.</p>
-    {% endfor %}
+<main class="container">
+  <section class="offerings">
+    <h2>What We Offer</h2>
+    <div class="offer">
+      <h3>Seamless Vendor Match-up</h3>
+      <p>Matching a dedicated service provider to a client for their event’s specific needs</p>
+    </div>
+    <div class="offer">
+      <h3>Effortless Client Connection</h3>
+      <p>Ease with which providers can connect with potential clients looking for their specific services</p>
+    </div>
+    <div class="offer">
+      <h3>Provider Spotlight</h3>
+      <p>Feature positive reviews of service providers by clients who have successfully used their services, ranking you higher to other clients</p>
+    </div>
+    <div class="offer">
+      <h3>Provider Growth Suite</h3>
+      <p>Helping service providers expand their reach and book more events through our platform</p>
+    </div>
   </section>
 
-  <nav class="pagination">
-    <!-- Pagination Links -->
-    {% if dancers.has_previous %}
-    <a href="?page={{ dancers.previous_page_number }}" aria-label="Previous">&lt;</a>
-    {% endif %}
-    {% for num in dancers.paginator.page_range %}
-      <a href="?page={{ num }}" {% if num == dancers.number %}class="active"{% endif %}>{{ num }}</a>
-    {% endfor %}
-    {% if dancers.has_next %}
-      <a href="?page={{ dancers.next_page_number }}" aria-label="Next">&gt;</a>
-    {% endif %}
-  </nav>
+  <section class="testimonials">
+    <h2>Hear from those that have experienced us</h2>
+    <div class="testimonial">
+      <img src="{% static 'media/avatar1.jpeg' %}" alt="Angel Anderson">
+      <h3>Angel Anderson</h3>
+      <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem.</p>
+    </div>
+    <div class="testimonial">
+      <img src="{% static 'media/avatar1.jpeg' %}" alt="John Doe">
+      <h3>John Doe</h3>
+      <p>Am et, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
+    </div>
+    <div class="testimonial">
+      <img src="{% static 'media/avatar1.jpeg' %}" alt="Diana Smith">
+      <h3>Diana Smith</h3>
+      <p>Consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor.</p>
+    </div>
+  </section>
 </main>
 
 <footer class="main-footer">
   <div class="container">
-    <div class="footer-content">
-      <section class="footer-section">
+    <div class="footer-logo">
+      <img src="{% static 'logo.png' %}" alt="Logo">
+      <p>&copy; Photo, Inc. 2024, Making Celebrations Easier</p>
+    </div>
+    <div class="footer-links">
+      <div>
         <h4>Community</h4>
         <ul>
           <li><a href="#featured-events">Featured events</a></li>
           <li><a href="#promotions">Promotions</a></li>
         </ul>
-      </section>
-      <section class="footer-section">
+      </div>
+      <div>
         <h4>Company</h4>
         <ul>
-          <li><a href="#about-us">About us</a></li>
+          <li><a href="{% url 'about' %}">About us</a></li>
           <li><a href="#contact">Contact us</a></li>
           <li><a href="#history">History</a></li>
         </ul>
-      </section>
-      <div class="footer-auth">
-        <button id="register-button">Register</button>
-        <button id="login-button">Log in</button>
       </div>
+      <div class="footer-auth">
+        <a href="{% url 'signup' %}" class="button">Register</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'logout' %}" class="button">Log out</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="button">Log in</a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="social-media">
+      <p>Follow us:</p>
+      <a href="#"><img src="{% static 'icon-facebook.png' %}" alt="Facebook"></a>
+      <a href="#"><img src="{% static 'icon-twitter.png' %}" alt="Twitter"></a>
+      <a href="#"><img src="{% static 'icon-instagram.png' %}" alt="Instagram"></a>
     </div>
   </div>
 </footer>
 
 <script src="{% static 'script.js' %}"></script>
-
 </body>
 </html>

@@ -13,6 +13,7 @@ class ServiceProvider(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='service_provider')
     location = models.CharField(max_length=255)
     average_rating = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
+    name = models.CharField(max_length=255, default='Provider name')
 
     def __str__(self):
         return self.user.username

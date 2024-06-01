@@ -3,11 +3,6 @@ from rest_framework.exceptions import ValidationError
 from .models import Service, ServiceProvider, Booking, Review
 from django.utils import timezone
 
-class ServiceProviderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ServiceProvider
-        exclude = ('user',)
-
 class ServiceSerializer(serializers.ModelSerializer):
     provider_details = serializers.SerializerMethodField()
 
@@ -29,6 +24,12 @@ class ServiceSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("The price must be a positive number.")
         return value
+
+class ServiceProviderSerializer(serializers.ModelSerializer):
+    services = ServiceSerializer(many=True, read_only=True)
+    class Meta:
+        model = ServiceProvider
+        fields = ['id', 'name', 'average_rating', 'services']
 
 class BookingSerializer(serializers.ModelSerializer):
     service_details = serializers.SerializerMethodField()

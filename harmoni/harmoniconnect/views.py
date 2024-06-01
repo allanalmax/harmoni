@@ -61,11 +61,11 @@ class ServiceSearchViewSet(viewsets.ViewSet):
         serializer = ServiceSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(detail=False, methods=['get'], url_path='recommendations', url_name='service-search-recommendations')
+    @action(detail=False, methods=['get'], url_path='recommendations', url_name='recommendations')
     def recommendation_list(self, request):
         budget = request.query_params.get('budget', None)
         category = request.query_params.get('category', None)
-        min_rating = request.query_params.get('min_rating', None)  # New parameter for minimum rating
+        min_rating = request.query_params.get('min_rating', None)
         availability_start = request.query_params.get('availability_start', None)
         availability_end = request.query_params.get('availability_end', None)
 
@@ -75,19 +75,18 @@ class ServiceSearchViewSet(viewsets.ViewSet):
         if category:
             query &= Q(services__category=category)
         if min_rating:
-            query &= Q(average_rating__gte=min_rating)  # Ensure the service provider's rating is considered
+            query &= Q(average_rating__gte=min_rating)
         if availability_start and availability_end:
             availability_start = datetime.strptime(availability_start, '%Y-%m-%dT%H:%M:%S')
             availability_end = datetime.strptime(availability_end, '%Y-%m-%dT%H:%M:%S')
             query &= Q(services__provider__availabilities__start_time__gte=availability_start,
-                    services__provider__availabilities__end_time__lte=availability_end)
+                       services__provider__availabilities__end_time__lte=availability_end)
 
         providers = ServiceProvider.objects.filter(query).distinct()
-        providers = providers.order_by('-average_rating')  # Sort providers by rating in descending order
+        providers = providers.order_by('-average_rating')
         serializer = ServiceProviderSerializer(providers, many=True, context={'request': request})
 
         return Response(serializer.data)
-
 
 class ServiceProviderViewSet(viewsets.ModelViewSet):
     queryset = ServiceProvider.objects.all()
