@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register as a Service Provider</title>
+    <link rel="stylesheet" href="{% static 'css/provider_register.css' %}">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'logo.png' %}" alt="Photo Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">My Dashboard</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="{% url 'search' %}">Search</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="register-section">
+            <div class="register-box">
+                <h2>Start your journey with us</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="form-group">
+                        {{ form.company_name.label_tag }}
+                        {{ form.company_name }}
+                        {{ form.company_name.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {{ form.email.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.phone.label_tag }}
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.service_type.label_tag }}
+                        {{ form.service_type }}
+                        {{ form.service_type.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.tax_number.label_tag }}
+                        {{ form.tax_number }}
+                        {{ form.tax_number.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password1.label_tag }}
+                        {{ form.password1 }}
+                        {{ form.password1.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.password2.label_tag }}
+                        {{ form.password2 }}
+                        {{ form.password2.errors }}
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">By clicking Register, you agree to our <a href="#">Terms and
+                                Conditions</a></label>
+                    </div>
+                    <button type="submit" class="register-button">Register</button>
+                </form>
+                <div class="login-link">
+                    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

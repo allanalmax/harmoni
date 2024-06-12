@@ -4,19 +4,12 @@ from .models import Service, ServiceProvider, Booking, Review
 from django.utils import timezone
 
 class ServiceSerializer(serializers.ModelSerializer):
-    provider_details = serializers.SerializerMethodField()
+    provider = serializers.PrimaryKeyRelatedField(read_only=True)  # Use PrimaryKeyRelatedField
 
     class Meta:
         model = Service
         fields = '__all__'
 
-    def get_provider_details(self, obj):
-        """
-        Method to return the details of the provider of the service.
-        """
-        serializer = ServiceProviderSerializer(obj.provider)
-        return serializer.data
-    
     def validate_price(self, value):
         """
         Check that the price is a positive number.

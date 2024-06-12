@@ -9,23 +9,30 @@ body {
 
 .container {
   width: 90%;
-  margin: 0 auto;
-}
+      }
 
 .main-header {
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  /* background: #fff;
+  border-bottom: 1px solid #ddd; */
+  padding: 30px 50px;
 }
 
 .logo {
   width: 100px;
-  display: inline-block;
+  padding-left: 2rem;
+  /* display: inline-block; */
 }
 
 .navigation {
-  display: inline-block;
+  /* display: flex; */
+  /* justify-content: space-around; */
+  /* align-items: flex-end; */
   /* float: right; */
+  margin-right: 5rem;
+  /* width: 50%; */
+  /* margin-right: 0; */
 }
 
 .navigation ul {
@@ -36,7 +43,7 @@ body {
 
 .navigation ul li {
   display: inline;
-  margin: 0 10px;
+  margin: 0 2rem;
 }
 
 .navigation ul li a {
@@ -52,7 +59,7 @@ body {
 
 .hero img {
   width: 100%;
-  height: 400px;
+  height: 600px;
   object-fit: cover;
 }
 
@@ -67,8 +74,16 @@ body {
 }
 
 .offerings {
-  padding: 50px 0;
-  text-align: center;
+  /* padding: 20px 0; */
+  /* display: flex; */
+  text-align: left;
+  margin-left: 9rem ;
+  padding: 2rem 0;
+}
+
+.offer-section {
+  display: flex;
+  justify-content: space-between;
 }
 
 .offerings h2 {
@@ -77,10 +92,12 @@ body {
 }
 
 .offer {
-  display: inline-block;
+  /* display: inline-block; */
   width: 45%;
-  margin: 2.5%;
-  text-align: left;
+  /* margin: 2.5%; */
+  /* text-align: left; */
+  /* border: 2px solid red; */
+  margin-bottom: 3rem;
 }
 
 .offer h3 {
@@ -93,8 +110,16 @@ body {
 }
 
 .testimonials {
-  padding: 50px 0;
-  text-align: center;
+  padding: 2rem 0;
+  /* border: 2px solid red; */
+  text-align: left;
+  margin-left: 8.8rem;
+  border-top: 1px solid black;
+}
+
+
+.testimonial-section {
+  display: flex;
 }
 
 .testimonials h2 {
@@ -124,14 +149,22 @@ body {
   font-size: 16px;
 }
 
+/* footer section */
 .main-footer {
-  background: #f8f8f8;
+  /* background: #f8f8f8; */
   padding: 20px 0;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid black;
+}
+
+.upper-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: first baseline ;
 }
 
 .footer-logo {
   text-align: center;
+  margin-left: 8.8rem;
 }
 
 .footer-links {
@@ -164,6 +197,7 @@ body {
 
 .footer-auth {
   text-align: center;
+  padding-top: 1rem;
 }
 
 .footer-auth .button {
@@ -182,10 +216,18 @@ body {
 
 .social-media {
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  margin-left: 8.8rem;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
 }
 
 .social-media a {
-  display: inline-block;
   margin: 0 10px;
 }
 

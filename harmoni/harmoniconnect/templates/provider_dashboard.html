@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/provider_dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Photo Logo">
+        </div>
+        <nav>
+            <a href="#">Features</a>
+            <a href="#">My Dashboard</a>
+            <a href="#">Support</a>
+            <a href="#">Search</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="profile-header">
+            <img src="{% static 'images/profile-banner.png' %}" alt="Profile Banner" class="profile-banner">
+            <div class="profile-info">
+                <img src="{% static 'images/profile-picture.png' %}" alt="Profile Picture" class="profile-picture">
+                <div class="profile-details">
+                    <h2>ABC Dancers and Singers</h2>
+                    <p>Dancers and Singers</p>
+                </div>
+                <button class="edit-profile-button">Edit Profile</button>
+            </div>
+        </section>
+
+        <section class="tabs">
+            <button class="tab-button active" onclick="openTab('scheduled')">Scheduled</button>
+            <button class="tab-button" onclick="openTab('pending')">Pending</button>
+            <button class="tab-button" onclick="openTab('completed')">Completed</button>
+        </section>
+
+        <section id="scheduled" class="tab-content active">
+            <div class="booking-details">
+                <p><strong>Booking ID:</strong> D00231</p>
+                <p><strong>Service:</strong> Traditional Dancers - Western</p>
+                <p><strong>Date & Time:</strong> 3rd April, 3pm</p>
+                <p><strong>Location:</strong> Pearl Gardens</p>
+                <p><strong>Client Name:</strong> Mary Cleveland</p>
+                <p><strong>Status:</strong> Confirmed</p>
+                <p><strong>Special Request:</strong> Keep Time</p>
+                <button class="cancel-button">Cancel</button>
+            </div>
+        </section>
+
+        <!-- Repeat similar sections for pending and completed tabs -->
+
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="community">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="#">Featured events</a></li>
+                    <li><a href="#">Promotions</a></li>
+                </ul>
+            </div>
+            <div class="company">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Contact us</a></li>
+                    <li><a href="#">History</a></li>
+                </ul>
+            </div>
+            <div class="footer-auth">
+                <a href="{% url 'login' %}" class="button">Log in</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; Photo, Inc. 2024, Making Celebrations Easier</p>
+            <div class="social-links">
+                <p>Follow us:</p>
+                <a href="#"><img src="{% static 'images/icon-facebook.png' %}" alt="Facebook"></a>
+                <a href="#"><img src="{% static 'images/icon-twitter.png' %}" alt="Twitter"></a>
+                <a href="#"><img src="{% static 'images/icon-instagram.png' %}" alt="Instagram"></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>

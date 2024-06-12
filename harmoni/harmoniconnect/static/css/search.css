@@ -1,0 +1,263 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Header section */
+.main-header {
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 30px 50px; */
+}
+
+.logo {
+    width: 100px;
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.navigation ul {
+    display: flex;
+    list-style: none;
+}
+
+.navigation li {
+    margin-right: 20px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+/* Main section */
+.filter-section {
+    background-color: #f0f0f0;
+    padding: 2rem 4rem;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-bar input {
+    padding: 9px;
+    margin-right: 10px;
+    width: 400px;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.filter-form {
+    display: flex;
+    justify-content: space-between;
+}
+
+.right-filter {
+    margin-right: 4rem;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group select,
+.form-group input {
+    width: 25rem;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.filter-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.dancer-listings {
+    /* display: flex;
+    flex-wrap: wrap; */
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.dancer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* flex: 1 1 calc(50% - 20px); */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.dancer-item img {
+    max-width: 40%;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.dancer-info {
+    text-align: left;
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.dancer-info h3 {
+    margin: 0 0 10px;
+}
+
+/* .description {
+    border: 2px solid red;
+    margin-bottom: 20rem;
+} */
+
+.details-button {
+    padding: .8rem 2.2rem;
+    background-color: #007bff;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    /* margin-top: 25rem; */
+}
+
+.details-button a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.pagination {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px;
+    background-color: #f0f0f0;
+    color: #007bff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.pagination .active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* footer section */
+.main-footer {
+    /* background: #f8f8f8; */
+    padding: 20px 0;
+    border-top: 1px solid black;
+  }
+  
+  .upper-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: first baseline ;
+  }
+  
+  .footer-logo {
+    text-align: center;
+    margin-left: 8.8rem;
+  }
+  
+  .footer-links {
+    display: flex;
+    justify-content: space-around;
+  }
+  
+  .footer-links div {
+    flex: 1;
+  }
+  
+  .footer-links h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-links ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-links ul li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-links ul li a {
+    text-decoration: none;
+    color: #007BFF;
+  }
+  
+  .footer-auth {
+    text-align: center;
+    padding-top: 1rem;
+  }
+  
+  .footer-auth .button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .footer-auth .button:hover {
+    background: #0056b3;
+  }
+  
+  .social-media {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 8.8rem;
+  }
+  
+  .social-links {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+  }
+  
+  .social-media a {
+    margin: 0 10px;
+  }
+  
+  .social-media img {
+    width: 30px;
+    height: 30px;
+  }

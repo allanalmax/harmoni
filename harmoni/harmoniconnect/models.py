@@ -14,6 +14,12 @@ class ServiceProvider(models.Model):
     location = models.CharField(max_length=255)
     average_rating = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
     name = models.CharField(max_length=255, default='Provider name')
+    image_url = models.URLField(blank=True)  # Optional field for service provider image URL
+    description = models.TextField(blank=True)  # Optional field for service provider description
+    offers = models.TextField(blank=True)  # Field to store offered services (comma-separated or JSON format)
+    pricing = models.TextField(blank=True)  # Field to store pricing information (text or JSON format)
+    availability_description = models.TextField(blank=True)  # Text field for general availability info (e.g., "Weekdays 9am-5pm")
+    is_featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username

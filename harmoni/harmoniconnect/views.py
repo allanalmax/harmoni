@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView
 from rest_framework import viewsets, permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -11,9 +12,14 @@ from .models import Service, ServiceProvider, Booking, Review
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy
 from django.views import generic
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.views import LoginView
+from django import forms
 from django.db.models import Q
+from rest_framework.test import APIRequestFactory
 
 # ViewSets
 class CustomPermission(permissions.BasePermission):
@@ -49,14 +55,23 @@ class ServiceSearchViewSet(viewsets.ViewSet):
         if category:
             queryset = queryset.filter(category=category)
         if budget:
-            queryset = queryset.filter(price__lte=budget)
+            try:
+                budget_value = float(budget)
+                queryset = queryset.filter(price__lte=budget_value)
+            except ValueError:
+                # Handle the error if the budget is not a valid number
+                pass
         if start_time and end_time:
-            start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
-            end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
-            booked_services = Booking.objects.filter(
-                booking_date__range=(start_time, end_time)
-            ).values_list('service', flat=True)
-            queryset = queryset.exclude(id__in=booked_services)
+            try:
+                start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+                end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
+                booked_services = Booking.objects.filter(
+                    booking_date__range=(start_time, end_time)
+                ).values_list('service', flat=True)
+                queryset = queryset.exclude(id__in=booked_services)
+            except ValueError:
+                # Handle the error if the dates are not in the correct format
+                pass
 
         serializer = ServiceSerializer(queryset, many=True)
         return Response(serializer.data)
@@ -71,16 +86,30 @@ class ServiceSearchViewSet(viewsets.ViewSet):
 
         query = Q()
         if budget:
-            query &= Q(services__price__lte=budget)
+            try:
+                budget_value = float(budget)
+                query &= Q(services__price__lte=budget_value)
+            except ValueError:
+                # Handle the error if the budget is not a valid number
+                pass
         if category:
             query &= Q(services__category=category)
         if min_rating:
-            query &= Q(average_rating__gte=min_rating)
+            try:
+                min_rating_value = float(min_rating)
+                query &= Q(average_rating__gte=min_rating_value)
+            except ValueError:
+                # Handle the error if the rating is not a valid number
+                pass
         if availability_start and availability_end:
-            availability_start = datetime.strptime(availability_start, '%Y-%m-%dT%H:%M:%S')
-            availability_end = datetime.strptime(availability_end, '%Y-%m-%dT%H:%M:%S')
-            query &= Q(services__provider__availabilities__start_time__gte=availability_start,
-                       services__provider__availabilities__end_time__lte=availability_end)
+            try:
+                availability_start = datetime.strptime(availability_start, '%Y-%m-%dT%H:%M:%S')
+                availability_end = datetime.strptime(availability_end, '%Y-%m-%dT%H:%M:%S')
+                query &= Q(services__provider__availabilities__start_time__gte=availability_start,
+                           services__provider__availabilities__end_time__lte=availability_end)
+            except ValueError:
+                # Handle the error if the dates are not in the correct format
+                pass
 
         providers = ServiceProvider.objects.filter(query).distinct()
         providers = providers.order_by('-average_rating')
@@ -155,8 +184,94 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
 
+class CustomLoginView(LoginView):
+    template_name = 'login.html'
+
+    def get_success_url(self):
+        if self.request.user.is_service_provider:
+            return reverse_lazy('provider_dashboard') 
+        else:
+            return reverse_lazy('home') 
+
+class SearchTestView(TemplateView):
+    template_name = 'search.html'
+
+# def test_search(request):
+#     # Simulate some search results (replace with your actual logic)
+#     search_results = [
+#     {'name': 'Service 1', 'description': 'Brief description', 'id': 1},  # Add an ID
+#     {'name': 'Service 2', 'description': 'Another description', 'id': 2},  # Add an ID
+#     ]
+#     context = {'search_results': search_results}
+#     return render(request, 'search.html', context)
+
 def home(request):
     return render(request, 'home.html')
 
+def login(request):
+    return render(request, 'login.html')
+
+def register(request):
+    return render(request, 'register.html')
+
+def customer_register(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()  # Save the new user
+            return redirect('login')  # Redirect to the login page
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'client_register.html', {'form': form})
+
+def provider_register(request):
+    if request.method == 'POST':
+        form = ServiceProviderCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            print("Form is valid and user created!")  # Debug statement
+            return redirect('login')  # Redirect to the login page
+        else:
+            print("Form is not valid")  # Debug statement
+            print(form.errors)  # Print form errors to console for debugging
+    else:
+        form = ServiceProviderCreationForm()
+    return render(request, 'provider_register.html', {'form': form})
+
+def search(request):
+    """
+    Handles search requests for service providers based on user input.
+    """
+
+    # Capture search criteria from request parameters
+    category = request.GET.get('category')
+    budget = request.GET.get('budget')
+    availability_start = request.GET.get('start_time')
+    availability_end = request.GET.get('end_time')
+
+    # Initialize search results
+    search_results = None
+
+    if category or budget or availability_start or availability_end:
+        # Use ServiceSearchViewSet for complex filtering logic
+        search_results = ServiceSearchViewSet.as_view({'get': 'list'})(request).data
+
+    # Fetch Popular or Featured Providers (modify based on your logic)
+    popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]  # Assuming a boolean 'is_featured' field
+
+    context = {'search_results': search_results, 'popular_providers': popular_providers}
+
+    return render(request, 'search.html', context)
+
 def about(request):
     return render(request, 'about.html')
+
+@login_required
+def service_detail(request, service_provider_id):
+    service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
+    context = {'service_provider': service_provider}
+    return render(request, 'service_detail.html', context)
+
+@login_required
+def provider_dashboard(request):
+    return render(request, 'provider_dashboard.html')

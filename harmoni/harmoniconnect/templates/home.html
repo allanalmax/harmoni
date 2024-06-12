@@ -1,114 +1,133 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Photo</title>
+  <title>HarmoniConnect</title>
   <link rel="stylesheet" href="{% static 'css/home.css' %}">
 </head>
+
 <body>
 
-<header class="main-header">
-  <div class="container">
+  <header class="main-header">
     <img src="{% static 'logo.png' %}" alt="Logo" class="logo">
     <nav class="navigation">
       <ul>
         <li><a href="#features">Features</a></li>
         <li><a href="#dashboard">My Dashboard</a></li>
         <li><a href="#support">Support</a></li>
-        <li><a href="#search">Search</a></li>
+        <li><a href="{% url 'search' %}">Search</a></li>
       </ul>
     </nav>
-  </div>
-</header>
+  </header>
 
-<section class="hero">
-  <img src="{% static 'media/fireworks.jpeg' %}" alt="Fireworks">
-  <h1>Making Celebrations Easier</h1>
-</section>
-
-<main class="container">
-  <section class="offerings">
-    <h2>What We Offer</h2>
-    <div class="offer">
-      <h3>Seamless Vendor Match-up</h3>
-      <p>Matching a dedicated service provider to a client for their event’s specific needs</p>
-    </div>
-    <div class="offer">
-      <h3>Effortless Client Connection</h3>
-      <p>Ease with which providers can connect with potential clients looking for their specific services</p>
-    </div>
-    <div class="offer">
-      <h3>Provider Spotlight</h3>
-      <p>Feature positive reviews of service providers by clients who have successfully used their services, ranking you higher to other clients</p>
-    </div>
-    <div class="offer">
-      <h3>Provider Growth Suite</h3>
-      <p>Helping service providers expand their reach and book more events through our platform</p>
-    </div>
+  <section class="hero">
+    <img src="{% static 'images/fireworks.jpeg' %}" alt="Fireworks">
+    <h1>Making Celebrations Easier</h1>
   </section>
 
-  <section class="testimonials">
-    <h2>Hear from those that have experienced us</h2>
-    <div class="testimonial">
-      <img src="{% static 'media/avatar1.jpeg' %}" alt="Angel Anderson">
-      <h3>Angel Anderson</h3>
-      <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem.</p>
-    </div>
-    <div class="testimonial">
-      <img src="{% static 'media/avatar1.jpeg' %}" alt="John Doe">
-      <h3>John Doe</h3>
-      <p>Am et, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis.</p>
-    </div>
-    <div class="testimonial">
-      <img src="{% static 'media/avatar1.jpeg' %}" alt="Diana Smith">
-      <h3>Diana Smith</h3>
-      <p>Consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor.</p>
-    </div>
-  </section>
-</main>
+  <main class="container">
+    <section>
+      <div class="offerings">
+        <h2>What We Offer</h2>
+        <div class="offer-section">
+          <div class="offer">
+            <h3>Seamless Vendor Match-up</h3>
+            <p>Matching a dedicated service provider to a client for their event’s specific needs</p>
+          </div>
+          <div class="offer">
+            <h3>Effortless Client Connection</h3>
+            <p>Ease with which providers can connect with potential clients looking for their specific services</p>
+          </div>
+        </div>
 
-<footer class="main-footer">
-  <div class="container">
-    <div class="footer-logo">
-      <img src="{% static 'logo.png' %}" alt="Logo">
-      <p>&copy; Photo, Inc. 2024, Making Celebrations Easier</p>
-    </div>
-    <div class="footer-links">
-      <div>
-        <h4>Community</h4>
-        <ul>
-          <li><a href="#featured-events">Featured events</a></li>
-          <li><a href="#promotions">Promotions</a></li>
-        </ul>
+        <div class="offer-section">
+          <div class="offer">
+            <h3>Provider Spotlight</h3>
+            <p>Feature positive reviews of service providers by clients who have successfully used their services,
+              ranking you higher to other clients</p>
+          </div>
+          <div class="offer">
+            <h3>Provider Growth Suite</h3>
+            <p>Helping service providers expand their reach and book more events through our platform</p>
+          </div>
+        </div>
       </div>
-      <div>
-        <h4>Company</h4>
-        <ul>
-          <li><a href="{% url 'about' %}">About us</a></li>
-          <li><a href="#contact">Contact us</a></li>
-          <li><a href="#history">History</a></li>
-        </ul>
-      </div>
-      <div class="footer-auth">
-        <a href="{% url 'signup' %}" class="button">Register</a>
-        {% if user.is_authenticated %}
-          <a href="{% url 'logout' %}" class="button">Log out</a>
-        {% else %}
-          <a href="{% url 'login' %}" class="button">Log in</a>
-        {% endif %}
-      </div>
-    </div>
-    <div class="social-media">
-      <p>Follow us:</p>
-      <a href="#"><img src="{% static 'icon-facebook.png' %}" alt="Facebook"></a>
-      <a href="#"><img src="{% static 'icon-twitter.png' %}" alt="Twitter"></a>
-      <a href="#"><img src="{% static 'icon-instagram.png' %}" alt="Instagram"></a>
-    </div>
-  </div>
-</footer>
+    </section>
 
-<script src="{% static 'script.js' %}"></script>
+    <section class="testimonials">
+      <h2>Hear from those that have experienced us</h2>
+      <div class="testimonial-section">
+        <div class="testimonial">
+          <img src="{% static 'images/avatar1.jpeg' %}" alt="Angel Anderson">
+          <h3>Angel Anderson</h3>
+          <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni
+            dolores eos qui ratione voluptatem.</p>
+        </div>
+        <div class="testimonial">
+          <img src="{% static 'images/avatar1.jpeg' %}" alt="John Doe">
+          <h3>John Doe</h3>
+          <p>Am et, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+            enim ad minim veniam, quis.</p>
+        </div>
+        <div class="testimonial">
+          <img src="{% static 'images/avatar1.jpeg' %}" alt="Diana Smith">
+          <h3>Diana Smith</h3>
+          <p>Consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem
+            ipsum quia dolor.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="upper-footer">
+        <div class="footer-logo">
+          <img src="{% static 'logo.png' %}" alt="Logo">
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#featured-events">Featured events</a></li>
+              <li><a href="#promotions">Promotions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="{% url 'about' %}">About us</a></li>
+              <li><a href="#contact">Contact us</a></li>
+              <li><a href="#history">History</a></li>
+            </ul>
+          </div>
+          <div class="footer-auth">
+            <a href="{% url 'register' %}" class="button">Register</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="button">Log out</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Log in</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="social-media">
+        <p>&copy; Photo, Inc. 2024, Making Celebrations Easier</p>
+        <div class="social-links">
+          <p>Follow us:</p>
+          <a href="#"><img src="{% static 'icon-facebook.png' %}" alt="Facebook"></a>
+          <a href="#"><img src="{% static 'icon-twitter.png' %}" alt="Twitter"></a>
+          <a href="#"><img src="{% static 'icon-instagram.png' %}" alt="Instagram"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'script.js' %}"></script>
 </body>
+
 </html>

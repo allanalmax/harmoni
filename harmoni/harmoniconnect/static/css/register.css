@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #fff;
+}
+
+.logo img {
+    height: 40px;
+}
+
+nav a {
+    margin: 0 1rem;
+    text-decoration: none;
+    color: #007BFF;
+}
+
+main {
+    text-align: center;
+    padding: 2rem;
+}
+
+.welcome-section {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 800px;
+}
+
+.welcome-message h2 {
+    margin: 0;
+}
+
+.registration-options {
+    display: flex;
+    justify-content: space-around;
+    margin: 2rem 0;
+}
+
+.for-customers, .for-providers {
+    flex: 1;
+    margin: 0 1rem;
+}
+
+.register-button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #007BFF;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.register-button:hover {
+    background-color: #0056b3;
+}
+
+.login p {
+    margin-top: 2rem;
+}
+
+footer {
+    background-color: #fff;
+    padding: 1rem;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.footer-logo img {
+    height: 40px;
+}
+
+.footer-links {
+    display: flex;
+}
+
+.footer-links div {
+    margin: 0 1rem;
+}
+
+.footer-links h4 {
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-social img {
+    height: 20px;
+    margin: 0 0.5rem;
+}

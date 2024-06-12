@@ -5,8 +5,10 @@ from django.conf.urls.static import static
 from rest_framework import routers
 from harmoniconnect import views
 from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, BookingViewSet, ReviewViewSet, SignUpView, ServiceSearchViewSet
+from harmoniconnect.views import CustomLoginView
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
+from django.contrib.auth.views import LoginView
 
 router = DefaultRouter()
 router.register(r'services', ServiceViewSet)
@@ -15,7 +17,7 @@ router.register(r'bookings', BookingViewSet)
 router.register(r'reviews', ReviewViewSet)
 router.register(r'services/search', ServiceSearchViewSet, basename='service-search')
 
-# # Print URLs for debugging
+# # Print URLs for debugginga
 # for url_pattern in router.urls:
 #     print(url_pattern)
 
@@ -24,9 +26,17 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('signup/', SignUpView.as_view(), name='signup'),
+    # path('login/', auth_views.LoginView.as_view(), name='login'),
+    # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # path('signup/', SignUpView.as_view(), name='signup'),
+    path('login/', CustomLoginView.as_view(), name='login'),
+    path('register/', views.register, name='register'),
+    path('register/customer/', views.customer_register, name='customer_register'),
+    path('register/provider/', views.provider_register, name='provider_register'),
+    path('search/', views.search, name='search'),
+    path('service-providers/<int:service_provider_id>/', views.service_detail, name='service_detail'),
+    path('service-provider-dashboard/', views.provider_dashboard, name='service_provider_dashboard'),
+    # path('test_search/', views.test_search, name='test_search'),
 ]
 
 # Handling static and media files in development

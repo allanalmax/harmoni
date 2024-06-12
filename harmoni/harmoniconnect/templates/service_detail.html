@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ service_provider.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/service_detail.css' %}">
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo"><img src="{% static 'logo.png' %}" alt="Logo"></a>
+            <nav class="navigation">
+                <ul>
+                    <li><a href="">Features</a></li>
+                    <li><a href="">My Dashboard</a></li>
+                    <li><a href="">Support</a></li>
+                </ul>
+                <div class="search-bar">
+                    <form action="{% url 'search' %}" method="get">
+                        <input type="search" id="search" name="search" placeholder="Search">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="service-detail">
+            <a href="{% url 'search' %}" class="back-button">←</a>
+            <h1>{{ service_provider.name }}</h1>
+            <img src="{{ service_provider.image_url }}" alt="{{ service_provider.name }}">
+            <button class="book-button">Book Service</button>
+            
+            <div class="service-description">
+                <h2>About {{ service_provider.name }}</h2>
+                <p>{{ service_provider.description }}</p>
+            </div>
+            
+            <div class="service-offer">
+                <h2>What We Offer:</h2>
+                <ul>
+                    {% for offer in service_provider.offers %}
+                    <li>{{ offer }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <div class="service-pricing">
+                <p><strong>Pricing Information:</strong> {{ service_provider.pricing }}</p>
+                <p><strong>Availability:</strong> {{ service_provider.availability_description }}</p>
+            </div>
+            
+            <div class="reviews">
+                <h2>Reviews:</h2>
+                <div class="review-list">
+                    {% for review in service_provider.reviews %}
+                    <div class="review-item">
+                        <img src="{{ review.reviewer_avatar }}" alt="{{ review.reviewer_name }}">
+                        <h3>{{ review.reviewer_name }}</h3>
+                        <p class="rating">{{ review.rating }} stars</p>
+                        <p>{{ review.text }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <button class="inquiry-button">Send an Inquiry</button>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <section class="footer-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="#">Featured events</a></li>
+                        <li><a href="#">Promotions</a></li>
+                    </ul>
+                </section>
+                <section class="footer-section">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About us</a></li>
+                        <li><a href="#">Contact us</a></li>
+                        <li><a href="#">History</a></li>
+                    </ul>
+                </section>
+                <div class="footer-auth">
+                    <a href="#" class="button">Register</a>
+                    <a href="#" class="button">Log in</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/service_detail.js' %}"></script>
+</body>
+</html>

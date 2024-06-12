@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thank You for Choosing Us</title>
+    <link rel="stylesheet" href="{% static 'css/register.css' %}" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="{% static 'images/logo.png' %}" alt="Photo Logo" />
+      </div>
+      <nav>
+        <a href="#">Features</a>
+        <a href="#">My Dashboard</a>
+        <a href="#">Support</a>
+        <a href="#">Search</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Thank you for choosing us</h1>
+      <section class="welcome-section">
+        <div class="welcome-message">
+          <h2>Welcome,</h2>
+          <p>
+            At Harmone, we connect customers with top-rated service providers
+            for all your event needs to ensure quality and satisfaction in every
+            transaction. Whether you're looking to offer your event services or
+            in need of event services, you've come to the right place.
+          </p>
+        </div>
+        <div class="registration-options">
+          <div class="for-customers">
+            <h3>For Customers:</h3>
+            <p>
+              Start browsing our extensive list of event services. Register to
+              find professional help that meets your event needs quickly and
+              easily.
+            </p>
+            <a href="{% url 'customer_register' %}" class="register-button">Register As A Customer</a>
+          </div>
+          <div class="for-providers">
+            <h3>For Service Providers:</h3>
+            <p>
+              Join our growing network. Expand your reach, connect with new
+              clients, and grow your business today!
+            </p>
+            <a href="{% url 'provider_register' %}" class="register-button">Register As A Service Provider</a>
+          </div>
+        </div>
+        <div class="login">
+          <p>Already Registered? <a href="{% url 'login' %}">Login here.</a></p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <img src="{% static 'images/logo.png' %}" alt="Photo Logo" />
+        </div>
+        <div class="footer-links">
+          <div class="community">
+            <h4>Community</h4>
+            <a href="#">Featured events</a>
+            <a href="#">Promotions</a>
+          </div>
+          <div class="company">
+            <h4>Company</h4>
+            <a href="#">About us</a>
+            <a href="#">Contact us</a>
+            <a href="#">History</a>
+          </div>
+        </div>
+        <div class="footer-social">
+          <h4>Follow us:</h4>
+          <a href="#"
+            ><img src="{% static 'images/facebook.png' %}" alt="Facebook"
+          /></a>
+          <a href="#"
+            ><img src="{% static 'images/twitter.png' %}" alt="Twitter"
+          /></a>
+          <a href="#"
+            ><img src="{% static 'images/instagram.png' %}" alt="Instagram"
+          /></a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
