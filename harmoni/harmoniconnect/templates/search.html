@@ -167,7 +167,7 @@
               </ul>
             </div>
             <div class="footer-auth">
-              <a href="{% url 'signup' %}" class="button">Register</a>
+              <a href="{% url 'register' %}" class="button">Register</a>
               {% if user.is_authenticated %}
               <a href="{% url 'logout' %}" class="button">Log out</a>
               {% else %}
