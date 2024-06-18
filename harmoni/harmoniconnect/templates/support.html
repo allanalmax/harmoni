@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support</title>
+    <link rel="stylesheet" href="{% static 'css/support.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+  <header class="main-header">
+        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+      
+          <nav class="navigation">
+            <ul>
+              <li><a href="{% url 'home' %}">Home</a></li>
+              <li><a href="{% url 'register' %}">My Dashboard</a></li>
+              <li><a href="{% url 'support' %}">Support</a></li>
+              <li><a href="{% url 'search' %}">Search</a></li>
+            </ul>
+          </nav>
+       
+      </header>
+
+    <div class="container">
+        <div class="content">
+            <h1>Contact Us</h1>
+            <p>Your experience and satisfaction is incredibly important to us, please do not hesitate to reach out.</p>
+            <p>Let's connect and make sure your journey with us is as smooth and enjoyable as possible.</p>
+            <h3>Company Email:</h3>
+            <p>harmone@support.ac.ug</p>
+            <h3>Socials:</h3>
+            <ul>
+                <li>
+                    <a href="#" class="fa fa-facebook"></a>
+                </li>
+                <li>
+                    <a href="#" class="fa fa-twitter"></a>
+                </li>
+                <li>
+                    <a href="#" class="fa fa-instagram"></a>
+                </li>
+            
+            </ul>
+
+        </div>
+        <div class="form">
+            <h2>Contact Us</h2>
+            <form method="post">
+                {% csrf_token %}
+                <label for="name">Name*</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">Email*</label>
+                <input type="email" id="email" name="email" required>
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,40 +1,49 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f8f8f8;
+    background-color: #d2cece;
     margin: 0;
     padding: 0;
+
 }
+.container {
+    width: 90%;
+        }
 
 header {
     background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    padding: 10px 0;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center ;
+        margin-bottom: 10px;
+        padding: 5px;       
 }
 
-.logo {
-    float: left;
-    margin-left: 20px;
+.logo{
+    width: 100px;
+    border-radius: 40%;
+    margin-right: auto;
 }
 
-nav {
+.navigation {
     float: right;
     margin-right: 20px;
 }
 
-nav ul {
+.navigation ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-nav ul li {
+.navigation ul li {
     display: inline;
     margin-left: 20px;
 }
 
-nav ul li a {
+.navigation ul li a {
     text-decoration: none;
-    color: #333;
+    color: #007bff;
 }
 
 .register-section {

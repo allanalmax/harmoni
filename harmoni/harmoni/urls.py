@@ -36,6 +36,8 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('service-providers/<int:service_provider_id>/', views.service_detail, name='service_detail'),
     path('service-provider-dashboard/', views.provider_dashboard, name='service_provider_dashboard'),
+    path('support/', views.support, name='support'),
+    path('client_dashboard/', views.dashboard, name='client_dashboard'),
     # path('test_search/', views.test_search, name='test_search'),
 ]
 
