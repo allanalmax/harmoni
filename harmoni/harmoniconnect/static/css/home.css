@@ -12,44 +12,43 @@ body {
       }
 
 .main-header {
-  display: flex;
-  justify-content: space-between;
-  /* background: #fff;
-  border-bottom: 1px solid #ddd; */
-  padding: 30px 50px;
-}
-
-.logo {
-  width: 100px;
-  padding-left: 2rem;
-  /* display: inline-block; */
-}
-
-.navigation {
-  /* display: flex; */
-  /* justify-content: space-around; */
-  /* align-items: flex-end; */
-  /* float: right; */
-  margin-right: 5rem;
-  /* width: 50%; */
-  /* margin-right: 0; */
-}
-
-.navigation ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.navigation ul li {
-  display: inline;
-  margin: 0 2rem;
-}
-
-.navigation ul li a {
-  text-decoration: none;
-  color: #007BFF;
-}
+        background-color: #fff;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end ;
+        margin: 10px;
+        /* padding: 30px 50px; */
+    }
+    
+    .logo {
+      width: 100px;
+      border-radius: 40%;
+      margin-right: auto;
+     /* display: inline-block; */
+    }
+    
+    .navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+    }
+    
+    .navigation ul {
+        display: flex;
+        list-style: none;
+        margin-left: auto;
+    }
+    
+    .navigation li {
+        margin-right: 20px;
+    }
+    
+    .navigation a {
+        text-decoration: none;
+        color: #007bff;
+    }
 
 .hero {
   position: relative;
@@ -65,12 +64,12 @@ body {
 
 .hero h1 {
   position: absolute;
-  top: 50%;
+  bottom: 10px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 48px;
-  background: rgba(0, 0, 0, 0.5);
+  transform: translateX(-50%);
+  font-size: 45px;
   padding: 10px 20px;
+  white-space: nowrap;
 }
 
 .offerings {
@@ -159,11 +158,12 @@ body {
 .upper-footer {
   display: flex;
   justify-content: space-between;
-  align-items: first baseline ;
+  align-items: end ;
 }
 
 .footer-logo {
-  text-align: center;
+  width: 200px;
+  border-radius: 10%;
   margin-left: 8.8rem;
 }
 
@@ -234,4 +234,30 @@ body {
 .social-media img {
   width: 30px;
   height: 30px;
+}
+.fa {
+  padding: 10px;
+  font-size: 30px;
+  width: 15px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 50%;
+}
+
+.fa:hover {
+  opacity: 0.7;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-twitter {
+  background: #55ACEE;
+  color: white;
+}
+.fa-instagram{
+  background: palevioletred;
+  color: white
 }

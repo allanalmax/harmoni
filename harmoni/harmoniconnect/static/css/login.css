@@ -3,7 +3,7 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background: url('../images/background.jpg') no-repeat center center fixed;
+    background-color: rgb(210, 210, 213);
     background-size: cover;
 }
 
@@ -16,7 +16,9 @@ header {
 }
 
 .logo img {
-    height: 40px;
+    width: 100px;
+    border-radius: 40%;
+    margin-right: auto;
 }
 
 nav a {
