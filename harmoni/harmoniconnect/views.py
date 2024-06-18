@@ -275,3 +275,6 @@ def service_detail(request, service_provider_id):
 @login_required
 def provider_dashboard(request):
     return render(request, 'provider_dashboard.html')
+
+def logout(request):
+    return render(request, 'logout.html')
