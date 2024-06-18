@@ -4,18 +4,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dancer Groups</title>
+    <title>Search Page</title>
     <link rel="stylesheet" href="{% static 'css/search.css' %}" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
+
   <body>
     <header class="main-header">
-      <img src="{% static 'logo.png' %}" alt="Logo" class="logo" />
+      <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
       <div class="container">
         <nav class="navigation">
           <ul>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#dashboard">My Dashboard</a></li>
-            <li><a href="#support">Support</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
+            <li><a href="{% url 'support' %}">Support</a></li>
           </ul>
         </nav>
       </div>
@@ -147,9 +150,7 @@
     <footer class="main-footer">
       <div class="container">
         <div class="upper-footer">
-          <div class="footer-logo">
-            <img src="{% static 'logo.png' %}" alt="Logo" />
-          </div>
+            <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
           <div class="footer-links">
             <div>
               <h4>Community</h4>
@@ -163,7 +164,6 @@
               <ul>
                 <li><a href="{% url 'about' %}">About us</a></li>
                 <li><a href="#contact">Contact us</a></li>
-                <li><a href="#history">History</a></li>
               </ul>
             </div>
             <div class="footer-auth">
@@ -177,18 +177,12 @@
           </div>
         </div>
         <div class="social-media">
-          <p>&copy; Photo, Inc. 2024, Making Celebrations Easier</p>
+          <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
           <div class="social-links">
             <p>Follow us:</p>
-            <a href="#"
-              ><img src="{% static 'icon-facebook.png' %}" alt="Facebook"
-            /></a>
-            <a href="#"
-              ><img src="{% static 'icon-twitter.png' %}" alt="Twitter"
-            /></a>
-            <a href="#"
-              ><img src="{% static 'icon-instagram.png' %}" alt="Instagram"
-            /></a>
+            <a href="#" class="fa fa-facebook"></a>
+            <a href="#" class="fa fa-twitter"></a>
+            <a href="#" class="fa fa-instagram"></a>
           </div>
         </div>
       </div>
