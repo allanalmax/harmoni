@@ -42,42 +42,44 @@ class UserProfileForm(forms.ModelForm):
         }
 # new form code
 
-class CustomUserCreationForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=True)
-    last_name = forms.CharField(max_length=30, required=True)
+class CustomUserCreationForm(forms.Form):
+    username = forms.CharField(max_length=255, required=True)
+    phone_number = forms.CharField(max_length=15, required=False)
     email = forms.EmailField(max_length=254, required=True)
-    service_preferences = forms.ChoiceField(choices=[
-        ('event_photography', 'Event Photography'),
-        ('portrait_sessions', 'Portrait Sessions'),
-        ('custom_projects', 'Custom Projects')
-    ], required=True)
-    communication_preferences = forms.ChoiceField(choices=[
-        ('email', 'Email'),
-        ('phone', 'Phone'),
-        ('sms', 'SMS')
-    ], required=True)
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
-    class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields + (
-            'first_name', 'last_name', 'email', 'service_preferences', 'communication_preferences'
-        )
+    def save(self, commit=True):
+        cleaned_data = self.cleaned_data
+        username = cleaned_data['username']
+        email = cleaned_data['email']
+        password = cleaned_data['password1']
+        phone_number = cleaned_data.get('phone_number', '')  # Handle optional phone number
+
+        # Create user object using your custom user model
+        user = CustomUser.objects.create_user(username=username, email=email, password=password)
+        user.is_client = True  # Set user type as client
+        user.phone_number = phone_number  # Set phone number (optional)
+        if commit:
+            user.save()
+        return user
+
 
 class ServiceProviderCreationForm(UserCreationForm):
-    company_name = forms.CharField(max_length=255, required=True)
+    username = forms.CharField(max_length=255, required=True)  # Updated field name
     email = forms.EmailField(max_length=254, required=True)
     phone = forms.CharField(max_length=15, required=True)
-    service_type = forms.ChoiceField(choices=[
-        ('event_photography', 'Event Photography'),
-        ('portrait_sessions', 'Portrait Sessions'),
-        ('custom_projects', 'Custom Projects')
+    location = forms.CharField(max_length=15, required=True)
+    category = forms.ChoiceField(choices=[  # Updated field name and choices
+        ('Dance', 'Dance'),
+        ('Music', 'Music'),
+        ('MC', 'Master of Ceremonies'),
     ], required=True)
-    tax_number = forms.CharField(max_length=100, required=True)
+    description = forms.CharField(required=True)  # Added new field
 
-    class Meta(UserCreationForm.Meta):
-        model = CustomUser
-        fields = UserCreationForm.Meta.fields + (
-            'company_name', 'email', 'phone', 'service_type', 'tax_number'
-        )
+    class Meta:
+        model = get_user_model()  # Assuming you have a custom user model
+        fields = ['username', 'email', 'phone', 'location', 'category', 'description', 'password1', 'password2']  # Updated field list
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -86,8 +88,10 @@ class ServiceProviderCreationForm(UserCreationForm):
             user.save()
             ServiceProvider.objects.create(
                 user=user,
-                name=self.cleaned_data['company_name'],
-                location='Default Location',
+                # Updated name field to use username
+                name=self.cleaned_data['username'],
+                location=self.cleaned_data['location'],
                 average_rating=0.0
             )
         return user
+

@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.db.models import Avg
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)  # Added unique email field
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     is_service_provider = models.BooleanField(default=False)  # Identify if the user is a service provider
 

@@ -10,13 +10,13 @@
   <body>
     <header>
       <div class="logo">
-        <img src="{% static 'images/logo.png' %}" alt="Photo Logo" />
+        <img src="{% static 'images/logo.jpg' %}" alt="Photo Logo" class="logo"/>
       </div>
       <nav>
-        <a href="#">Features</a>
+        <a href="{% url 'home' %}">Home</a>
         <a href="#">My Dashboard</a>
         <a href="#">Support</a>
-        <a href="#">Search</a>
+        <a href="{% url 'search' %}">Search</a>
       </nav>
     </header>
 
@@ -57,37 +57,47 @@
       </section>
     </main>
 
-    <footer>
-      <div class="footer-content">
-        <div class="footer-logo">
-          <img src="{% static 'images/logo.png' %}" alt="Photo Logo" />
-        </div>
-        <div class="footer-links">
-          <div class="community">
-            <h4>Community</h4>
-            <a href="#">Featured events</a>
-            <a href="#">Promotions</a>
+    <footer class="main-footer">
+      <div class="container">
+        <div class="upper-footer">
+            <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
+          <div class="footer-links">
+            <div>
+              <h4>Community</h4>
+              <ul>
+                <li><a href="#featured-events">Featured events</a></li>
+                <li><a href="#promotions">Promotions</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4>Company</h4>
+              <ul>
+                <li><a href="{% url 'about' %}">About us</a></li>
+                <li><a href="#contact">Contact us</a></li>
+              </ul>
+            </div>
+            <div class="footer-auth">
+              <a href="{% url 'register' %}" class="button">Register</a>
+              {% if user.is_authenticated %}
+              <a href="{% url 'logout' %}" class="button">Log out</a>
+              {% else %}
+              <a href="{% url 'login' %}" class="button">Log in</a>
+              {% endif %}
+            </div>
           </div>
-          <div class="company">
-            <h4>Company</h4>
-            <a href="#">About us</a>
-            <a href="#">Contact us</a>
-            <a href="#">History</a>
-          </div>
         </div>
-        <div class="footer-social">
-          <h4>Follow us:</h4>
-          <a href="#"
-            ><img src="{% static 'images/facebook.png' %}" alt="Facebook"
-          /></a>
-          <a href="#"
-            ><img src="{% static 'images/twitter.png' %}" alt="Twitter"
-          /></a>
-          <a href="#"
-            ><img src="{% static 'images/instagram.png' %}" alt="Instagram"
-          /></a>
+        <div class="social-media">
+          <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
+          <div class="social-links">
+            <p>Follow us:</p>
+            <a href="#" class="fa fa-facebook"></a>
+            <a href="#" class="fa fa-twitter"></a>
+            <a href="#" class="fa fa-instagram"></a>
+          </div>
         </div>
       </div>
     </footer>
+  
+
   </body>
 </html>

@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView
+from django.shortcuts import render
+from django.core.mail import send_mail
+from django.http import HttpResponse
 from rest_framework import viewsets, permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -275,3 +278,60 @@ def service_detail(request, service_provider_id):
 @login_required
 def provider_dashboard(request):
     return render(request, 'provider_dashboard.html')
+
+def support(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject', 'No Subject')
+        message = request.POST.get('message')
+
+        full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+
+        send_mail(
+            subject,
+            full_message,
+            'from@example.com',  # Replace with your email
+            ['harmone@support.ac.ug'],
+        )
+
+        return HttpResponse('Thank you for your message.')
+
+    return render(request, 'support.html')
+
+def dashboard(request):
+    user = {
+        'name': 'Mary Cleveland',
+        'role': 'Client',
+    }
+    bookings = [
+        {
+            'booking_id': 'D00568',
+            'service': 'Singers',
+            'date_time': '2nd February, 3pm',
+            'location': 'Pearl Gardens',
+            'provider': 'ABC Singers',
+            'status': 'Completed',
+            'special_request': 'Keep Time'
+        }
+    ]
+    reviews = [
+        {
+            'user': 'Mary Cleveland',
+            'role': 'Client',
+            'rating': 4,
+            'text': 'A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. The process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.'
+        },
+        {
+            'user': 'Mary Cleveland',
+            'role': 'Client',
+            'rating': 3,
+            'text': 'A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. The process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.'
+        }
+    ]
+    context = {
+        'user': user,
+        'bookings': bookings,
+        'reviews': reviews,
+    }
+    return render(request, 'client_dashboard.html', context)

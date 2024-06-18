@@ -10,19 +10,19 @@
 </head>
 
 <body>
-    <header>
-        <div class="logo">
-            <img src="{% static 'logo.png' %}" alt="Photo Logo">
-        </div>
-        <nav>
+    <header class="header">
+        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+        <div class="container">
+          <nav class="navigation">
             <ul>
-                <li><a href="#">Features</a></li>
-                <li><a href="#">My Dashboard</a></li>
-                <li><a href="#">Support</a></li>
-                <li><a href="{% url 'search' %}">Search</a></li>
+              <li><a href="{% url 'home' %}">Home</a></li>
+              <li><a href="#dashboard">My Dashboard</a></li>
+              <li><a href="#support">Support</a></li>
+              <li><a href="{% url 'search' %}">Search</a></li>
             </ul>
-        </nav>
-    </header>
+          </nav>
+        </div>
+      </header>
 
     <main>
         <section class="register-section">

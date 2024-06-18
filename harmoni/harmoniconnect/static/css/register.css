@@ -14,7 +14,9 @@ header {
 }
 
 .logo img {
-    height: 40px;
+    width: 100px;
+      border-radius: 40%;
+      margin-right: auto;
 }
 
 nav a {
@@ -69,18 +71,92 @@ main {
     margin-top: 2rem;
 }
 
-footer {
-    background-color: #fff;
-    padding: 1rem;
-    text-align: center;
-}
-
-.footer-content {
+.main-footer {
+    /* background: #f8f8f8; */
+    padding: 20px 0;
+    border-top: 1px solid black;
+  }
+  
+  .upper-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: end ;
+  }
+  
+  .footer-logo {
+    width: 200px;
+    border-radius: 10%;
+    margin-left: 8.8rem;
+  }
+  
+  .footer-links {
     display: flex;
     justify-content: space-around;
+  }
+  
+  .footer-links div {
+    flex: 1;
+  }
+  
+  .footer-links h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .footer-links ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-links ul li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-links ul li a {
+    text-decoration: none;
+    color: #007BFF;
+  }
+  
+  .footer-auth {
+    text-align: center;
+    padding-top: 1rem;
+  }
+  
+  .footer-auth .button {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  
+  .footer-auth .button:hover {
+    background: #0056b3;
+  }
+  
+  .social-media {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 8.8rem;
+  }
+  
+  .social-links {
+    display: flex;
     align-items: center;
-}
-
+    margin-right: 1rem;
+  }
+  
+  .social-media a {
+    margin: 0 10px;
+  }
+  
+  .social-media img {
+    width: 30px;
+    height: 30px;
+  }
 .footer-logo img {
     height: 40px;
 }
@@ -112,3 +188,29 @@ footer {
     height: 20px;
     margin: 0 0.5rem;
 }
+.fa {
+    padding: 10px;
+    font-size: 30px;
+    width: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 50%;
+  }
+  
+  .fa:hover {
+    opacity: 0.7;
+  }
+  
+  .fa-facebook {
+    background: #3B5998;
+    color: white;
+  }
+  
+  .fa-twitter {
+    background: #55ACEE;
+    color: white;
+  }
+  .fa-instagram{
+    background: palevioletred;
+    color: white
+  }
