@@ -36,6 +36,10 @@ ALLOWED_HOSTS = []
 # Custom user model
 AUTH_USER_MODEL = 'harmoniconnect.CustomUser'
 
+AUTHENTICATION_BACKENDS = [
+    'harmoniconnect.custom_auth_backend.EmailOrUsernameBackend',
+]
+
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",

@@ -218,7 +218,7 @@ def customer_register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the new user
+            user = form.save()  # Save the new user
             return redirect('login')  # Redirect to the login page
     else:
         form = CustomUserCreationForm()

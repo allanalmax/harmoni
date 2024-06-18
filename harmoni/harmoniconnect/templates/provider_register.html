@@ -32,9 +32,8 @@
                     {% csrf_token %}
                     {{ form.non_field_errors }}
                     <div class="form-group">
-                        {{ form.company_name.label_tag }}
-                        {{ form.company_name }}
-                        {{ form.company_name.errors }}
+                        {{ form.username.label_tag }}  {{ form.username }}
+                        {{ form.username.errors }}
                     </div>
                     <div class="form-group">
                         {{ form.email.label_tag }}
@@ -42,19 +41,8 @@
                         {{ form.email.errors }}
                     </div>
                     <div class="form-group">
-                        {{ form.phone.label_tag }}
-                        {{ form.phone }}
+                        {{ form.phone.label_tag }}  {{ form.phone }}
                         {{ form.phone.errors }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.service_type.label_tag }}
-                        {{ form.service_type }}
-                        {{ form.service_type.errors }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.tax_number.label_tag }}
-                        {{ form.tax_number }}
-                        {{ form.tax_number.errors }}
                     </div>
                     <div class="form-group">
                         {{ form.password1.label_tag }}
@@ -65,6 +53,24 @@
                         {{ form.password2.label_tag }}
                         {{ form.password2 }}
                         {{ form.password2.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.location.label_tag }}  {{ form.location }}
+                        {{ form.location.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.category.label_tag }}
+                        <select name="category" required>
+                            <option value="" disabled selected>Choose a category</option>
+                            <option value="Dance">Dance</option>
+                            <option value="Master of Ceremonies">Master of Ceremonies</option>
+                            <option value="Music">Music</option>
+                        </select>
+                        {{ form.category.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.description.label_tag }}  {{ form.description }}
+                        {{ form.description.errors }}
                     </div>
                     <div class="form-group">
                         <input type="checkbox" id="terms" name="terms" required>
