@@ -1,0 +1,80 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    height: 500px;
+    margin: 50px;
+}
+.success-card {
+padding: 30px;
+}
+.success-card h2 {
+    color: #00c853;
+}
+
+.success-card .booking-id {
+    color: #777;
+    margin: 10px 0;
+}
+
+.success-card img.success-icon {
+    width: 100px;
+    margin: 20px 0;
+}
+
+.success-card h3 {
+    margin: 20px 0;
+}
+
+.success-card .details {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
+
+.success-card .detail p {
+    margin: 5px 0;
+}
+
+.button {
+    display: block;
+    width: 80%;
+    padding: 10px;
+    margin: auto;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    text-align: center;
+}
+
+.button.primary {
+    background-color: #00c853;
+    color: white;
+}
+
+.button.secondary {
+    background-color: #007bff;
+    color: white;
+}
+
+.button:hover {
+    opacity: 0.9;
+}
