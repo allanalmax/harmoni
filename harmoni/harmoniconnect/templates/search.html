@@ -17,12 +17,15 @@
         <nav class="navigation">
           <ul>
             <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'support' %}">Support</a></li>
           </ul>
         </nav>
       </div>
     </header>
+<div>
+  <a href="javascript:window.history.back();"  ><i class="fa fa-arrow-left"></i></a>
+</div>
 
     <main class="container">
       <aside class="filter-section">
@@ -188,6 +191,6 @@
       </div>
     </footer>
 
-    <script src="{% static 'script.js' %}"></script>
+    <script src="{% static 'basics.js' %}"></script>
   </body>
 </html>

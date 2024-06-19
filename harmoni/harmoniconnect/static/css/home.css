@@ -13,7 +13,6 @@ body {
 
 .main-header {
         background-color: #fff;
-        border-bottom: 1px solid #ccc;
         display: flex;
         justify-content: space-between;
         align-items: flex-end ;
@@ -23,8 +22,8 @@ body {
     
     .logo {
       width: 100px;
-      border-radius: 40%;
-      margin-right: auto;
+      border-radius: 10%;
+      
      /* display: inline-block; */
     }
     
