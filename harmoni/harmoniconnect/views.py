@@ -337,3 +337,13 @@ def dashboard(request):
         'reviews': reviews,
     }
     return render(request, 'client_dashboard.html', context)
+
+def booking_success(request):
+    return render(request, 'booking_success.html')
+
+def provider_dashboard(request):
+    return render(request, 'provider_dashboard.html')
+
+def reviews(request):
+  
+    return render(request, 'reviews.html')
