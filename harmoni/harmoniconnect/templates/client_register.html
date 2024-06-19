@@ -25,7 +25,7 @@
   <main>
     <section class="register-section">
       <div class="register-box">
-        <h2>Simplify Celebrations with us today</h2>
+        <h2>Start your journey with us today</h2>
         <form method="post">
           {% csrf_token %}
           {{ form.non_field_errors }}
@@ -40,19 +40,17 @@
             {{ form.last_name.errors }}
           </div>
           <div class="form-group">
+            {{ form.username.label_tag }}  {{ form.username }}
+            {{ form.username.errors }}
+          </div>
+          <div class="form-group">
             {{ form.email.label_tag }}
             {{ form.email }}
             {{ form.email.errors }}
           </div>
           <div class="form-group">
-            {{ form.service_preferences.label_tag }}
-            {{ form.service_preferences }}
-            {{ form.service_preferences.errors }}
-          </div>
-          <div class="form-group">
-            {{ form.communication_preferences.label_tag }}
-            {{ form.communication_preferences }}
-            {{ form.communication_preferences.errors }}
+            {{ form.phone_number.label_tag }}  {{ form.phone_number }}
+            {{ form.phone_number.errors }}
           </div>
           <div class="form-group">
             {{ form.password1.label_tag }}

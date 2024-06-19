@@ -1,8 +1,8 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
-from .models import Booking, Review, Service
-from .models import CustomUser, ServiceProvider
+from .models import Booking, Review, Service, CustomUser, ServiceProvider
 
 User = get_user_model()
 
@@ -12,6 +12,12 @@ class UserRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("A user with this email already exists.")
+        return email
 
 class ServiceBookingForm(forms.ModelForm):
     class Meta:
@@ -49,6 +55,12 @@ class CustomUserCreationForm(forms.Form):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email).exists():
+            raise ValidationError("A user with this email already exists.")
+        return email
+
     def save(self, commit=True):
         cleaned_data = self.cleaned_data
         username = cleaned_data['username']
@@ -81,6 +93,12 @@ class ServiceProviderCreationForm(UserCreationForm):
         model = get_user_model()  # Assuming you have a custom user model
         fields = ['username', 'email', 'phone', 'location', 'category', 'description', 'password1', 'password2']  # Updated field list
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("A user with this email already exists.")
+        return email
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_service_provider = True
@@ -94,4 +112,3 @@ class ServiceProviderCreationForm(UserCreationForm):
                 average_rating=0.0
             )
         return user
-

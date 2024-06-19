@@ -31,7 +31,10 @@ SECRET_KEY = get_env_variable('SECRET_KEY') if 'SECRET_KEY' in os.environ else '
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    '52a1-41-75-176-237.ngrok-free.app',
+]
 
 # Custom user model
 AUTH_USER_MODEL = 'harmoniconnect.CustomUser'

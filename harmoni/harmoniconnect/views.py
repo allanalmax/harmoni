@@ -1,12 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views import generic
 from django.views.generic import TemplateView
-from django.shortcuts import render
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
-from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from .permissions import IsServiceProvider
@@ -14,7 +13,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Service, ServiceProvider, Booking, Review
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy
-from django.views import generic
 from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
@@ -23,6 +21,7 @@ from django.contrib.auth.views import LoginView
 from django import forms
 from django.db.models import Q
 from rest_framework.test import APIRequestFactory
+from django.db import IntegrityError, transaction
 
 # ViewSets
 class CustomPermission(permissions.BasePermission):
@@ -211,6 +210,9 @@ class SearchTestView(TemplateView):
 def home(request):
     return render(request, 'home.html')
 
+def about(request):
+    return render(request, 'about.html')
+
 def login(request):
     return render(request, 'login.html')
 
@@ -221,8 +223,15 @@ def customer_register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the new user
-            return redirect('login')  # Redirect to the login page
+            try:
+                with transaction.atomic():
+                    form.save()
+                return redirect('login')
+            except IntegrityError:
+                form.add_error('email', 'This email is already in use.')
+        else:
+            print("Form is invalid")  # Debug statement
+            print(form.errors)
     else:
         form = CustomUserCreationForm()
     return render(request, 'client_register.html', {'form': form})
@@ -231,9 +240,12 @@ def provider_register(request):
     if request.method == 'POST':
         form = ServiceProviderCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            print("Form is valid and user created!")  # Debug statement
-            return redirect('login')  # Redirect to the login page
+            try:
+                with transaction.atomic():
+                    form.save()
+                return redirect('login')
+            except IntegrityError:
+                form.add_error('email', 'This email is already in use.')
         else:
             print("Form is not valid")  # Debug statement
             print(form.errors)  # Print form errors to console for debugging
@@ -266,9 +278,6 @@ def search(request):
 
     return render(request, 'search.html', context)
 
-def about(request):
-    return render(request, 'about.html')
-
 @login_required
 def service_detail(request, service_provider_id):
     service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
@@ -279,29 +288,7 @@ def service_detail(request, service_provider_id):
 def provider_dashboard(request):
     return render(request, 'provider_dashboard.html')
 
-def logout(request):
-    return render(request, 'logout.html')
-def support(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        subject = request.POST.get('subject', 'No Subject')
-        message = request.POST.get('message')
-
-        full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
-
-        send_mail(
-            subject,
-            full_message,
-            'from@example.com',  # Replace with your email
-            ['harmone@support.ac.ug'],
-        )
-
-        return HttpResponse('Thank you for your message.')
-
-    return render(request, 'support.html')
-
-def dashboard(request):
+def client_dashboard(request):
     user = {
         'name': 'Mary Cleveland',
         'role': 'Client',
@@ -337,3 +324,26 @@ def dashboard(request):
         'reviews': reviews,
     }
     return render(request, 'client_dashboard.html', context)
+
+def support(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject', 'No Subject')
+        message = request.POST.get('message')
+
+        full_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+
+        send_mail(
+            subject,
+            full_message,
+            'from@example.com',  # Replace with your email
+            ['harmone@support.ac.ug'],
+        )
+
+        return HttpResponse('Thank you for your message.')
+
+    return render(request, 'support.html')
+
+def logout(request):
+    return render(request, 'logout.html')
