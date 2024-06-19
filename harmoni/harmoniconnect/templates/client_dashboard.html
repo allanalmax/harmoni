@@ -23,8 +23,11 @@
           </nav>
         </div>
       </header>
-
+      
     <div class="container">
+      <div>
+        <a href="javascript:window.history.back();"  ><i class="fa fa-arrow-left"></i></a>
+      </div>
         <div>
             <h1>My Dashboard</h1>
         </div>
@@ -37,19 +40,19 @@
             <button>Edit Profile</button>
         </div>
         <div class="tab-container">
-            <button class="tab-button active" onclick="openTab(event, 'completed')">Completed</button>
-            <button class="tab-button" onclick="openTab(event, 'Scheduled')">Scheduled</button>
+          <button class="tab-button active" onclick="openTab(event, 'Scheduled')">Scheduled</button>
+            <button class="tab-button" onclick="openTab(event, 'completed')">Completed</button>
         </div>
-        <div id="Completed" class="tab-content active">
+        <div id="Completed" class="tab-content">
             <div class="tab">
                 <h3>Completed Bookings</h3>
-                <p>Booking ID: D00568</p>
-                <p>Service: Singers</p>
-                <p>Date & Time: 2nd February, 3pm</p>
-                <p>Location: Pearl Gardens</p>
-                <p>Service Provider: ABC Singers</p>
-                <p>Status: Completed</p>
-                <p>Special Request: Keep Time</p>
+                <p><strong>Booking ID:</strong> D00568</p>
+                <p><strong>Service:</strong> Singers</p>
+                <p><strong>Date & Time:</strong> 2nd February, 3pm</p>
+                <p><strong>Location:</strong> Pearl Gardens</p>
+                <p><strong>Service Provider:</strong> ABC Singers</p>
+                <p><strong>Status: </strong>Completed</p>
+                <p><strong>Special Request:</strong> Keep Time</p>
                 <button class="button">Review service</button>
             </div>
             <h3>Reviews Submitted</h3>
@@ -68,7 +71,7 @@
                 </div>
             </div>
         </div>
-        <div id="Scheduled" class="tab-content">
+        <div id="Scheduled" class="tab-content active">
             <div class="tab">
                 <h3>Scheduled Bookings</h3>
                 <p>Booking ID: D00231</p>
