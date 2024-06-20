@@ -1,134 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Dashboard</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/provider_dashboard.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/provider_dashboard.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
 <body>
-    <header class="main-header">
-        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
-        <div class="container">
-          <nav class="navigation">
-            <ul>
-              <li><a href="{% url 'home' %}">Home</a></li>
-              <li><a href="{% url 'provider_dashboard' %}">My Dashboard</a></li>
-              <li><a href="{% url 'support' %}">Support</a></li>
-              <li><a href="{% url 'search' %}">Search</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+  <header class="main-header">
+    <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+    <div class="container">
+      <nav class="navigation">
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'provider_dashboard' %}">My Dashboard</a></li>
+          <li><a href="{% url 'support' %}">Support</a></li>
+          <li><a href="{% url 'search' %}">Search</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <main>
-        <section class="container" >
+  <main>
+    <section class="container">
+      <div>
+        <a href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a>
+      </div>
+      <div>
+        <h1>My Dashboard</h1>
+      </div>
+      <div class="profile">
+        <img src="{% static 'images/client.png' %}" alt="Profile Picture" width="80" height="80">
+        <div>
+          <h2>{{ service_provider.name }}</h2>
+          <p>Service Provider</p>
+        </div>
+        <button>Edit Profile</button>
+      </div>
+
+      <section class="tab-container">
+        <button class="tab-button active" onclick="openTab('pending')">Pending</button>
+        <button class="tab-button" onclick="openTab('scheduled')">Scheduled</button>
+        <button class="tab-button" onclick="openTab('completed')">Completed</button>
+      </section>
+
+      <div id="scheduled" class="tab-content">
+        {% for booking in scheduled_bookings %}
+        <div class="tab">
+          <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+          <p><strong>Service:</strong> {{ booking.service.name }}</p>
+          <p><strong>Date & Time:</strong> {{ booking.booking_date }}</p>
+          <p><strong>Location:</strong> {{ booking.service.location }}</p>
+          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
+          <p><strong>Status:</strong> Confirmed</p>
+          <p><strong>Special Request:</strong> {{ booking.special_request }}</p>
+          <button class="button">Completed</button>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="completed" class="tab-content">
+        {% for booking in completed_bookings %}
+        <div class="tab">
+          <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+          <p><strong>Service:</strong> {{ booking.service.name }}</p>
+          <p><strong>Date & Time:</strong> {{ booking.booking_date }}</p>
+          <p><strong>Location:</strong> {{ booking.service.location }}</p>
+          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
+          <p><strong>Status:</strong> Completed</p>
+          <p><strong>Special Request:</strong> {{ booking.special_request }}</p>
+          <a href="{% url 'reviews' %}"> <button class="button">Reviews</button></a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="pending" class="tab-content active">
+        {% for booking in pending_bookings %}
+        <div class="tab">
+          <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+          <p><strong>Service:</strong> {{ booking.service.name }}</p>
+          <p><strong>Date & Time:</strong> {{ booking.booking_date }}</p>
+          <p><strong>Location:</strong> {{ booking.service.location }}</p>
+          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
+          <p><strong>Status:</strong> Pending Approval</p>
+          <p><strong>Special Request:</strong> {{ booking.special_request }}</p>
+          <button class="button">Accept</button>
+          <button class="button">Decline</button>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="upper-footer">
+        <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
+        <div class="footer-links">
           <div>
-            <a href="javascript:window.history.back();"  ><i class="fa fa-arrow-left"></i></a>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#featured-events">Featured events</a></li>
+              <li><a href="#promotions">Promotions</a></li>
+            </ul>
           </div>
-            <div>
-                <h1>My Dashboard</h1>
-            </div>
-            <div class="profile">
-                <img src="{% static 'images/client.png' %}" alt="Profile Picture" width="80" height="80">
-                <div>
-                    <h2>Infinity Studios</h2>
-                    <p>Service Provider</p>
-                </div>
-                <button>Edit Profile</button>
-            </div>
-
-        <section class="tab-container">
-            <button class="tab-button active" onclick="openTab('pending')">Pending</button>
-            <button class="tab-button" onclick="openTab('scheduled')">Scheduled</button>
-            <button class="tab-button" onclick="openTab('completed')">Completed</button>
-        </section>
-
-        <div id="scheduled" class="tab-content">
-            <div class="tab">
-                <p><strong>Booking ID:</strong> D00231</p>
-                <p><strong>Service:</strong> Traditional Dancers - Western</p>
-                <p><strong>Date & Time:</strong> 3rd April, 3pm</p>
-                <p><strong>Location:</strong> Pearl Gardens</p>
-                <p><strong>Client Name:</strong> Mary Cleveland</p>
-                <p><strong>Status:</strong> Confirmed</p>
-                <p><strong>Special Request:</strong> Keep Time</p>
-                <button class="button">Completed</button>
-            </div>
-        </div>
-
-        <div id="completed" class="tab-content">
-            <div class="tab">
-                <p><strong>Booking ID:</strong> D00231</p>
-                <p><strong>Service:</strong> Traditional Dancers - Western</p>
-                <p><strong>Date & Time:</strong> 3rd April, 3pm</p>
-                <p><strong>Location:</strong> Pearl Gardens</p>
-                <p><strong>Client Name:</strong> Mary Cleveland</p>
-                <p><strong>Status:</strong> Completed</p>
-                <p><strong>Special Request:</strong> Keep Time</p>
-               <a href="{% url 'reviews' %}"> <button class="button">Reviews</button></a>
-            </div>
-        </div>
-
-        <div id="pending" class="tab-content active">
-            <div class="tab">
-                <p><strong>Booking ID:</strong> D00231</p>
-                <p><strong>Service:</strong> Traditional Dancers - Western</p>
-                <p><strong>Date & Time:</strong> 3rd April, 3pm</p>
-                <p><strong>Location:</strong> Pearl Gardens</p>
-                <p><strong>Client Name:</strong> Mary Cleveland</p>
-                <p><strong>Status:</strong> Pending Approval</p>
-                <p><strong>Special Request:</strong> Keep Time</p>
-                <button class="button">Accept</button>
-                <button class="button">Decline</button>
-            </div>
-        </div>
-        </section>
-    </main>
-
-    <footer class="main-footer">
-        <div class="container">
-          <div class="upper-footer">
-              <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
-            <div class="footer-links">
-              <div>
-                <h4>Community</h4>
-                <ul>
-                  <li><a href="#featured-events">Featured events</a></li>
-                  <li><a href="#promotions">Promotions</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4>Company</h4>
-                <ul>
-                  <li><a href="{% url 'about' %}">About us</a></li>
-                  <li><a href="#contact">Contact us</a></li>
-                </ul>
-              </div>
-              <div class="footer-auth">
-                <a href="{% url 'register' %}" class="button">Register</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="button">Log out</a>
-                {% else %}
-                <a href="{% url 'login' %}" class="button">Log in</a>
-                {% endif %}
-              </div>
-            </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="{% url 'about' %}">About us</a></li>
+              <li><a href="#contact">Contact us</a></li>
+            </ul>
           </div>
-          <div class="social-media">
-            <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
-            <div class="social-links">
-              <p>Follow us:</p>
-              <a href="#" class="fa fa-facebook"></a>
-              <a href="#" class="fa fa-twitter"></a>
-              <a href="#" class="fa fa-instagram"></a>
-            </div>
+          <div class="footer-auth">
+            <a href="{% url 'register' %}" class="button">Register</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="button">Log out</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Log in</a>
+            {% endif %}
           </div>
         </div>
-      </footer>
+      </div>
+      <div class="social-media">
+        <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
+        <div class="social-links">
+          <p>Follow us:</p>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-instagram"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-    <script src="{% static 'js/provider_dashboard.js' %}"></script>
+  <script src="{% static 'js/provider_dashboard.js' %}"></script>
 </body>
+
 </html>

@@ -4,6 +4,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models import Avg
+from django.conf import settings
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)  # Added unique email field
@@ -38,14 +39,22 @@ class Service(models.Model):
         ('MC', 'Master of Ceremonies'),
         # Add more categories as needed
     ]
-    provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE, related_name='services')
     name = models.CharField(max_length=255)
+    provider = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='services')
+    location = models.CharField(max_length=255, default='')
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
 
     def __str__(self):
         return f"{self.name} by {self.provider.user.username}"
+    
+    def save(self, *args, **kwargs):
+        if not self.location:
+            self.location = self.provider.service_provider.location
+        if not self.description:
+            self.description = self.provider.service_provider.description
+        super().save(*args, **kwargs)
 
 class Booking(models.Model):
     BOOKING_STATUS = [
@@ -57,6 +66,7 @@ class Booking(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bookings')
     booking_date = models.DateTimeField(db_index=True)
     status = models.CharField(max_length=20, choices=BOOKING_STATUS)
+    special_request = models.TextField(blank=True, null=True)  # Assuming special_request is a free text field
 
     def __str__(self):
         return f"Booking on {self.booking_date} for {self.client.user.username}"

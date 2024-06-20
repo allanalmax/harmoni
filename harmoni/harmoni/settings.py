@@ -33,7 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    '52a1-41-75-176-237.ngrok-free.app',
+    'a14d-41-75-176-237.ngrok-free.app',
 ]
 
 # Custom user model

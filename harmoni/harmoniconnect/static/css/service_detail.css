@@ -5,30 +5,48 @@ body {
     background-color: #f4f4f4;
 }
 
+/* 
 .container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+} */
+
+.main-header {
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* padding: 30px 50px; */
 }
 
-.main-header, .main-footer {
-    background-color: #fff;
-    padding: 20px 0;
-    border-bottom: 1px solid #ddd;
+.logo {
+    width: 100px;
+    border-radius: 10%;
+    margin-right: auto;
+    /* display: inline-block; */
+}
+
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
 }
 
 .navigation ul {
-    list-style: none;
-    padding: 0;
     display: flex;
-    justify-content: space-between;
+    list-style: none;
+}
+
+.navigation li {
+    margin-right: 20px;
 }
 
 .navigation a {
     text-decoration: none;
-    color: #000;
-    padding: 10px 20px;
-    display: block;
+    color: #007bff;
 }
 
 .search-bar input[type="search"] {
@@ -58,7 +76,8 @@ body {
     margin: 0 auto 20px;
 }
 
-.book-button, .inquiry-button {
+.book-button,
+.inquiry-button {
     display: block;
     width: 100%;
     max-width: 200px;
@@ -71,7 +90,10 @@ body {
     border-radius: 5px;
 }
 
-.service-description, .service-offer, .service-pricing, .reviews {
+.service-description,
+.service-offer,
+.service-pricing,
+.reviews {
     margin-bottom: 20px;
 }
 
@@ -82,27 +104,122 @@ body {
     border-radius: 5px;
 }
 
-.footer-content {
-    display: flex;
-    justify-content: space-between;
+/* footer section */
+.main-footer {
+    /* background: #f8f8f8; */
+    padding: 20px 0;
+    border-top: 1px solid black;
 }
 
-.footer-section ul {
+.upper-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.footer-logo {
+    width: 200px;
+    border-radius: 10%;
+    margin-left: 8.8rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-around;
+}
+
+.footer-links div {
+    flex: 1;
+}
+
+.footer-links h4 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.footer-links ul {
     list-style: none;
     padding: 0;
 }
 
-.footer-section a {
+.footer-links ul li {
+    margin-bottom: 10px;
+}
+
+.footer-links ul li a {
     text-decoration: none;
-    color: #000;
+    color: #007BFF;
+}
+
+.footer-auth {
+    text-align: center;
+    padding-top: 1rem;
 }
 
 .footer-auth .button {
-    background-color: #007bff;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
     display: inline-block;
-    margin-right: 10px;
+    margin: 10px;
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.footer-auth .button:hover {
+    background: #0056b3;
+}
+
+.social-media {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    margin-left: 8.8rem;
+}
+
+.social-links {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+}
+
+.social-media a {
+    margin: 0 10px;
+}
+
+.social-media img {
+    width: 30px;
+    height: 30px;
+}
+
+.fa {
+    padding: 10px;
+    font-size: 30px;
+    width: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 50%;
+}
+
+.fa-arrow-left {
+    color: black;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook {
+    background: #3B5998;
+    color: white;
+}
+
+.fa-twitter {
+    background: #55ACEE;
+    color: white;
+}
+
+.fa-instagram {
+    background: palevioletred;
+    color: white
 }

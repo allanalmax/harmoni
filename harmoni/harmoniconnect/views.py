@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.views.generic import TemplateView
+from django.views.decorators.csrf import csrf_protect
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from rest_framework import viewsets, permissions, status
@@ -15,13 +16,17 @@ from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSe
 from django.urls import reverse_lazy
 from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm
 from datetime import datetime
+from django.contrib import messages
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.models import User
 from django import forms
 from django.db.models import Q
 from rest_framework.test import APIRequestFactory
 from django.db import IntegrityError, transaction
+import json
 
 # ViewSets
 class CustomPermission(permissions.BasePermission):
@@ -213,7 +218,21 @@ def home(request):
 def about(request):
     return render(request, 'about.html')
 
+@csrf_protect
 def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            if hasattr(user, 'serviceprovider'):
+                return redirect('provider_dashboard', service_provider_id=user.serviceprovider.id)
+            else:
+                return redirect('client_dashboard')
+        else:
+            error_message = "Invalid username or password."
+            return render(request, 'registration/login.html', {'error_message': error_message})
     return render(request, 'login.html')
 
 def register(request):
@@ -285,8 +304,14 @@ def service_detail(request, service_provider_id):
     return render(request, 'service_detail.html', context)
 
 @login_required
-def provider_dashboard(request):
-    return render(request, 'provider_dashboard.html')
+def provider_dashboard(request, service_provider_id):
+    service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
+    bookings = Booking.objects.filter(service__provider=service_provider.user)
+    context = {
+        'service_provider': service_provider,
+        'bookings': bookings,
+    }
+    return render(request, 'provider_dashboard.html', context)
 
 def client_dashboard(request):
     user = {
@@ -346,12 +371,12 @@ def support(request):
     return render(request, 'support.html')
 
 def logout(request):
-    return render(request, 'logout.html')
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('home.html')
+
 def booking_success(request):
     return render(request, 'booking_success.html')
-
-def provider_dashboard(request):
-    return render(request, 'provider_dashboard.html')
 
 def reviews(request):
   

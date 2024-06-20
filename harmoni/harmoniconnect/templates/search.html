@@ -1,196 +1,169 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Search Page</title>
-    <link rel="stylesheet" href="{% static 'css/search.css' %}" />
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  </head>
 
-  <body>
-    <header class="main-header">
-      <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
-      <div class="container">
-        <nav class="navigation">
-          <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'support' %}">Support</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-<div>
-  <a href="javascript:window.history.back();"  ><i class="fa fa-arrow-left"></i></a>
-</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Page</title>
+  <link rel="stylesheet" href="{% static 'css/search.css' %}" />
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
 
-    <main class="container">
-      <aside class="filter-section">
-        <div class="search-bar">
-          <form method="get" action="{% url 'search' %}">
-            <input
-              type="search"
-              id="search"
-              name="search"
-              placeholder="Search"
-            />
-            <button type="submit">Search</button>
-          </form>
-        </div>
-        <h2>Filter</h2>
-        <form method="get" action="{% url 'search' %}">
-          <div class="filter-form">
-            <div>
-              <div class="form-group">
-                <label for="budget">Budget*</label>
-                <select id="budget" name="budget">
-                  <option value="1000000">1,000,000</option>
-                  <option value="5000000">5,000,000</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="availability">Availability*</label>
-                <input
-                  type="date"
-                  id="availability"
-                  name="start_time"
-                  placeholder="start_date"
-                />
-                <input
-                  type="date"
-                  id="availability_end"
-                  name="end_time"
-                  placeholder="end_date"
-                />
-              </div>
-            </div>
-            <div class="right-filter">
-              <div class="form-group">
-                <label for="services">Services*</label>
-                <select id="services" name="category">
-                  <option value="dancers">Dancers</option>
-                  <option value="Master of Ceremonies">MC</option>
-                  <option value="Musician">Dancers</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="ratings">Ratings*</label>
-                <select id="ratings" name="ratings">
-                  <option value="5">5 star</option>
-                  <option value="4">4 star</option>
-                  <option value="3">3 star</option>
-                  <option value="2">2 star</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <button type="submit" class="filter-button">Apply Filters</button>
-        </form>
-      </aside>
-
-      <section class="dancer-listings">
-        {% if search_results %}
-        <h2>Search Results</h2>
+<body>
+  <header class="main-header">
+    <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+    <div class="container">
+      <nav class="navigation">
         <ul>
-          {% for service in search_results %}
-          <article class="dancer-item">
-            <img
-              src="{% static 'images/{{ service.image }}' %}"
-              alt="Dancer Group 1"
-            />
-            <div class="dancer-info">
-              <h3>{{ service.provider.name }}</h3>
-              <p class="description">{{ service.description }}</p>
-              <a
-                href="{% url 'service_detail' service.provider.id %}"
-                class="details-button"
-                >Details</a
-              >
-            </div>
-          </article>
-          {% endfor %}
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+          <li><a href="{% url 'support' %}">Support</a></li>
         </ul>
-        {% else %}
-        <h2>Popular Service Providers</h2>
-        {% if popular_providers %}
-        <ul>
-          {% for provider in popular_providers %}
-          <article class="dancer-item">
-            <img
-              src="{% static 'images/{{ provider.image }}' %}"
-              alt="Dancer Group 1"
-            />
-            <div class="dancer-info">
-              <h3>{{ provider.name }}</h3>
-              <p class="description">{{ provider.description }}</p>
-              <a
-                href="{% url 'service_detail' provider.id %}"
-                class="details-button"
-                >Details</a
-              >
-            </div>
-          </article>
-          {% endfor %}
-        </ul>
-        {% else %}
-        <p>No popular service providers found at this time.</p>
-        {% endif %} 
-        {% endif %}
-      </section>
-
-      <nav class="pagination">
-        <a href="#" aria-label="Previous">&lt;</a>
-        <a href="#">1</a>
-        <a href="#" class="active">2</a>
-        <a href="#">3</a>
-        <a href="#" aria-label="Next">&gt;</a>
       </nav>
-    </main>
+    </div>
+  </header>
+  <div>
+    <a href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a>
+  </div>
 
-    <footer class="main-footer">
-      <div class="container">
-        <div class="upper-footer">
-            <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
-          <div class="footer-links">
-            <div>
-              <h4>Community</h4>
-              <ul>
-                <li><a href="#featured-events">Featured events</a></li>
-                <li><a href="#promotions">Promotions</a></li>
-              </ul>
+  <main class="container">
+    <aside class="filter-section">
+      <div class="search-bar">
+        <form method="get" action="{% url 'search' %}">
+          <input type="search" id="search" name="search" placeholder="Search" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      <h2>Filter</h2>
+      <form method="get" action="{% url 'search' %}">
+        <div class="filter-form">
+          <div>
+            <div class="form-group">
+              <label for="budget">Budget*</label>
+              <select id="budget" name="budget">
+                <option value="1000000">1,000,000</option>
+                <option value="5000000">5,000,000</option>
+              </select>
             </div>
-            <div>
-              <h4>Company</h4>
-              <ul>
-                <li><a href="{% url 'about' %}">About us</a></li>
-                <li><a href="#contact">Contact us</a></li>
-              </ul>
+            <div class="form-group">
+              <label for="availability">Availability*</label>
+              <input type="date" id="availability" name="start_time" placeholder="start_date" />
+              <input type="date" id="availability_end" name="end_time" placeholder="end_date" />
             </div>
-            <div class="footer-auth">
-              <a href="{% url 'register' %}" class="button">Register</a>
-              {% if user.is_authenticated %}
-              <a href="{% url 'logout' %}" class="button">Log out</a>
-              {% else %}
-              <a href="{% url 'login' %}" class="button">Log in</a>
-              {% endif %}
+          </div>
+          <div class="right-filter">
+            <div class="form-group">
+              <label for="services">Services*</label>
+              <select id="services" name="category">
+                <option value="dancers">Dancers</option>
+                <option value="Master of Ceremonies">MC</option>
+                <option value="Musician">Dancers</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ratings">Ratings*</label>
+              <select id="ratings" name="ratings">
+                <option value="5">5 star</option>
+                <option value="4">4 star</option>
+                <option value="3">3 star</option>
+                <option value="2">2 star</option>
+              </select>
             </div>
           </div>
         </div>
-        <div class="social-media">
-          <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
-          <div class="social-links">
-            <p>Follow us:</p>
-            <a href="#" class="fa fa-facebook"></a>
-            <a href="#" class="fa fa-twitter"></a>
-            <a href="#" class="fa fa-instagram"></a>
+        <button type="submit" class="filter-button">Apply Filters</button>
+      </form>
+    </aside>
+
+    <section class="dancer-listings">
+      {% if search_results %}
+      <h2>Search Results</h2>
+      <ul>
+        {% for service in search_results %}
+        <article class="dancer-item">
+          <img src="{% static service.provider.image_url %}" alt="{{ service.provider.name }} image" />
+          <div class="dancer-info">
+            <h3>{{ service.provider.name }}</h3>
+            <p class="description">{{ service.description }}</p>
+            <a href="{% url 'service_detail' service.provider.id %}" class="details-button">Details</a>
+          </div>
+        </article>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <h2>Popular Service Providers</h2>
+      {% if popular_providers %}
+      <ul>
+        {% for provider in popular_providers %}
+        <article class="dancer-item">
+          <img src="{% static provider.image_url %}" alt="{{ provider.name }} image" />
+          <div class="dancer-info">
+            <h3>{{ provider.name }}</h3>
+            <p class="description">{{ provider.description }}</p>
+            <a href="{% url 'service_detail' provider.id %}" class="details-button">Details</a>
+          </div>
+        </article>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p>No popular service providers found at this time.</p>
+      {% endif %}
+      {% endif %}
+    </section>
+
+    <nav class="pagination">
+      <a href="#" aria-label="Previous">&lt;</a>
+      <a href="#">1</a>
+      <a href="#" class="active">2</a>
+      <a href="#">3</a>
+      <a href="#" aria-label="Next">&gt;</a>
+    </nav>
+  </main>
+
+  <footer class="main-footer">
+    <div class="container">
+      <div class="upper-footer">
+        <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
+        <div class="footer-links">
+          <div>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#featured-events">Featured events</a></li>
+              <li><a href="#promotions">Promotions</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="{% url 'about' %}">About us</a></li>
+              <li><a href="#contact">Contact us</a></li>
+            </ul>
+          </div>
+          <div class="footer-auth">
+            <a href="{% url 'register' %}" class="button">Register</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="button">Log out</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Log in</a>
+            {% endif %}
           </div>
         </div>
       </div>
-    </footer>
+      <div class="social-media">
+        <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
+        <div class="social-links">
+          <p>Follow us:</p>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-instagram"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-    <script src="{% static 'basics.js' %}"></script>
-  </body>
+  <script src="{% static 'basics.js' %}"></script>
+</body>
+
 </html>

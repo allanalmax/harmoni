@@ -26,16 +26,17 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('', views.home, name='home'),
     path('about/', views.about, name='about'),
-    # path('login/', auth_views.LoginView.as_view(), name='login'),
+    
+    # Custom login view
+    path('accounts/login/', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    # path('signup/', SignUpView.as_view(), name='signup'),
-    path('login/', CustomLoginView.as_view(), name='login'),
     path('register/', views.register, name='register'),
     path('register/customer/', views.customer_register, name='customer_register'),
     path('register/provider/', views.provider_register, name='provider_register'),
+    
     path('search/', views.search, name='search'),
     path('service-providers/<int:service_provider_id>/', views.service_detail, name='service_detail'),
-    path('service-provider-dashboard/', views.provider_dashboard, name='provider_dashboard'),
+    path('service-provider-dashboard/<int:service_provider_id>/', views.provider_dashboard, name='provider_dashboard'),
     path('support/', views.support, name='support'),
     path('client_dashboard/', views.client_dashboard, name='client_dashboard'),
     path('booking_success/', views.booking_success, name='booking_success'),
