@@ -1,130 +1,138 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
+{% load static %}
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/client_dashboard.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/client_dashboard.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
 <body>
-    <header class="main-header">
-        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
-        <div class="container">
-          <nav class="navigation">
-            <ul>
-              <li><a href="{% url 'home' %}">Home</a></li>
-              <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
-              <li><a href="{% url 'support' %}">Support</a></li>
-              <li><a href="{% url 'search' %}">Search</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-      
+  <header class="main-header">
+    <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
     <div class="container">
-      <div>
-        <a href="javascript:window.history.back();"  ><i class="fa fa-arrow-left"></i></a>
-      </div>
-        <div>
-            <h1>My Dashboard</h1>
-        </div>
-        <div class="profile">
-            <img src="{% static 'images/client.png' %}" alt="Profile Picture" width="80" height="80">
-            <div>
-                <h2>Mary Cleveland</h2>
-                <p>Client</p>
-            </div>
-            <button>Edit Profile</button>
-        </div>
-        <div class="tab-container">
-          <button class="tab-button active" onclick="openTab(event, 'Scheduled')">Scheduled</button>
-            <button class="tab-button" onclick="openTab(event, 'completed')">Completed</button>
-        </div>
-        <div id="Completed" class="tab-content">
-            <div class="tab">
-                <h3>Completed Bookings</h3>
-                <p><strong>Booking ID:</strong> D00568</p>
-                <p><strong>Service:</strong> Singers</p>
-                <p><strong>Date & Time:</strong> 2nd February, 3pm</p>
-                <p><strong>Location:</strong> Pearl Gardens</p>
-                <p><strong>Service Provider:</strong> ABC Singers</p>
-                <p><strong>Status: </strong>Completed</p>
-                <p><strong>Special Request:</strong> Keep Time</p>
-                <button class="button">Review service</button>
-            </div>
-            <h3>Reviews Submitted</h3>
-            <div class="review">
-                <img src="{% static 'images/review.png' %}" alt="Profile Picture">
-                <div class="review-text">
-                    <h4>Mary Cleveland <span class="rating">★★★★☆</span></h4>
-                    <p>A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. the process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.</p>
-                </div>
-            </div>
-            <div class="review">
-                <img src="{% static 'images/review.png' %}" alt="Profile Picture">
-                <div class="review-text">
-                    <h4>Jane Quieller <span class="rating">★★★☆☆</span></h4>
-                    <p>A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. the process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.</p>
-                </div>
-            </div>
-        </div>
-        <div id="Scheduled" class="tab-content active">
-            <div class="tab">
-                <h3>Scheduled Bookings</h3>
-                <p>Booking ID: D00231</p>
-                <p>Service: Traditional Dancers</p>
-                <p>Date & Time: 3rd April, 3pm</p>
-                <p>Location: Pearl Gardens</p>
-                <p>Service Provider: ABC Dancers and Singers</p>
-                <p>Status: Confirmed</p>
-                <p>Special Request: Keep Time</p>
-                <button class="button">Cancel</button>
-            </div>
-        </div>
+      <nav class="navigation">
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
+          <li><a href="{% url 'support' %}">Support</a></li>
+          <li><a href="{% url 'search' %}">Search</a></li>
+        </ul>
+      </nav>
     </div>
-    <footer class="main-footer">
-        <div class="container">
-          <div class="upper-footer">
-              <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
-            <div class="footer-links">
-              <div>
-                <h4>Community</h4>
-                <ul>
-                  <li><a href="#featured-events">Featured events</a></li>
-                  <li><a href="#promotions">Promotions</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4>Company</h4>
-                <ul>
-                  <li><a href="{% url 'about' %}">About us</a></li>
-                  <li><a href="#contact">Contact us</a></li>
-                </ul>
-              </div>
-              <div class="footer-auth">
-                <a href="{% url 'register' %}" class="button">Register</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="button">Log out</a>
-                {% else %}
-                <a href="{% url 'login' %}" class="button">Log in</a>
-                {% endif %}
-              </div>
-            </div>
+  </header>
+
+  <div class="container">
+    <div>
+      <a href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a>
+    </div>
+    <div>
+      <h1>My Dashboard</h1>
+    </div>
+    <div class="profile">
+      <img src="{% static 'images/client.png' %}" alt="Profile Picture" width="80" height="80">
+      <div>
+        <h2>Mary Cleveland</h2>
+        <p>Client</p>
+      </div>
+      <button>Edit Profile</button>
+    </div>
+    <div class="tab-container">
+      <button class="tab-button active" onclick="openTab(event, 'Scheduled')">Scheduled</button>
+      <button class="tab-button" onclick="openTab(event, 'completed')">Completed</button>
+    </div>
+    <div id="Completed" class="tab-content">
+      <div class="tab">
+        <h3>Completed Bookings</h3>
+        <p><strong>Booking ID:</strong> D00568</p>
+        <p><strong>Service:</strong> Singers</p>
+        <p><strong>Date & Time:</strong> 2nd February, 3pm</p>
+        <p><strong>Location:</strong> Pearl Gardens</p>
+        <p><strong>Service Provider:</strong> ABC Singers</p>
+        <p><strong>Status: </strong>Completed</p>
+        <p><strong>Special Request:</strong> Keep Time</p>
+        <button class="button">Review service</button>
+      </div>
+      <h3>Reviews Submitted</h3>
+      <div class="review">
+        <img src="{% static 'images/review.png' %}" alt="Profile Picture">
+        <div class="review-text">
+          <h4>Mary Cleveland <span class="rating">★★★★☆</span></h4>
+          <p>A critical article or report, as in a periodical, on a book, play, recital, or the like; critique;
+            evaluation. the process of going over a subject again in study or recitation in order to fix it in the
+            memory or summarize the facts.</p>
+        </div>
+      </div>
+      <div class="review">
+        <img src="{% static 'images/review.png' %}" alt="Profile Picture">
+        <div class="review-text">
+          <h4>Jane Quieller <span class="rating">★★★☆☆</span></h4>
+          <p>A critical article or report, as in a periodical, on a book, play, recital, or the like; critique;
+            evaluation. the process of going over a subject again in study or recitation in order to fix it in the
+            memory or summarize the facts.</p>
+        </div>
+      </div>
+    </div>
+    <div id="Scheduled" class="tab-content active">
+      <div class="tab">
+        <h3>Scheduled Bookings</h3>
+        <p>Booking ID: D00231</p>
+        <p>Service: Traditional Dancers</p>
+        <p>Date & Time: 3rd April, 3pm</p>
+        <p>Location: Pearl Gardens</p>
+        <p>Service Provider: ABC Dancers and Singers</p>
+        <p>Status: Confirmed</p>
+        <p>Special Request: Keep Time</p>
+        <button class="button">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <footer class="main-footer">
+    <div class="container">
+      <div class="upper-footer">
+        <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
+        <div class="footer-links">
+          <div>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#featured-events">Featured events</a></li>
+              <li><a href="#promotions">Promotions</a></li>
+            </ul>
           </div>
-          <div class="social-media">
-            <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
-            <div class="social-links">
-              <p>Follow us:</p>
-              <a href="#" class="fa fa-facebook"></a>
-              <a href="#" class="fa fa-twitter"></a>
-              <a href="#" class="fa fa-instagram"></a>
-            </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="{% url 'about' %}">About us</a></li>
+              <li><a href="#contact">Contact us</a></li>
+            </ul>
+          </div>
+          <div class="footer-auth">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="button">Register</a>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="button">Log out</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Log in</a>
+            {% endif %}
           </div>
         </div>
-      </footer>
-      <script src="{% static 'js/client_dashboard.js' %}"></script>
-    </body>
+      </div>
+      <div class="social-media">
+        <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
+        <div class="social-links">
+          <p>Follow us:</p>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-instagram"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="{% static 'js/client_dashboard.js' %}"></script>
+</body>
+
 </html>

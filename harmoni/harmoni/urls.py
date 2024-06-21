@@ -29,7 +29,8 @@ urlpatterns = [
     
     # Custom login view
     path('accounts/login/', CustomLoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),
     path('register/customer/', views.customer_register, name='customer_register'),
     path('register/provider/', views.provider_register, name='provider_register'),

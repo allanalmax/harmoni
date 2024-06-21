@@ -13,11 +13,11 @@ from .permissions import IsServiceProvider
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Service, ServiceProvider, Booking, Review
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm
 from datetime import datetime
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
@@ -219,6 +219,22 @@ def about(request):
     return render(request, 'about.html')
 
 @csrf_protect
+# def login(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             auth_login(request, user)
+#             if hasattr(user, 'serviceprovider'):
+#                 return redirect('provider_dashboard', service_provider_id=user.serviceprovider.id)
+#             else:
+#                 return redirect('client_dashboard')
+#         else:
+#             error_message = "Invalid username or password."
+#             return render(request, 'registration/login.html', {'error_message': error_message})
+#     return render(request, 'login.html')
+
 def login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -227,7 +243,12 @@ def login(request):
         if user is not None:
             auth_login(request, user)
             if hasattr(user, 'serviceprovider'):
-                return redirect('provider_dashboard', service_provider_id=user.serviceprovider.id)
+                try:
+                    dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': user.serviceprovider.id})
+                    return redirect('provider_dashboard')
+                except Exception as e:
+                    print(f"Error reversing URL: {e}")
+                    return render(request, 'login.html', {'error_message': "URL reversing error."})
             else:
                 return redirect('client_dashboard')
         else:
@@ -297,6 +318,48 @@ def search(request):
 
     return render(request, 'search.html', context)
 
+# def search(request):
+#     """
+#     Handles search requests for service providers based on user input.
+#     """
+
+#     # Capture search criteria from request parameters
+#     query = request.GET.get('q', '')  # Get search query
+#     category = request.GET.get('category')
+#     budget = request.GET.get('budget')
+#     availability_start = request.GET.get('start_time')
+#     availability_end = request.GET.get('end_time')
+
+#     # Initialize search results
+#     search_results = ServiceProvider.objects.all()
+
+#     # Perform search based on category match
+#     if query:
+#         search_results = search_results.filter(
+#             Q(services__category__icontains=query) |
+#             Q(services__name__icontains=query)
+#         ).distinct()
+
+#     # Apply additional filters if provided
+#     if category:
+#         search_results = search_results.filter(services__category__icontains=category).distinct()
+#     if budget:
+#         search_results = search_results.filter(services__price__lte=budget).distinct()
+#     if availability_start and availability_end:
+#         search_results = search_results.filter(
+#             availabilities__start_time__lte=availability_start,
+#             availabilities__end_time__gte=availability_end
+#         ).distinct()
+
+#     # Fetch Popular or Featured Providers (modify based on your logic)
+#     popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]  # Assuming a boolean 'is_featured' field
+
+#     context = {'search_results': search_results, 'popular_providers': popular_providers, 'query': query}
+#     for provider in search_results:
+#         print(f"Provider ID: {provider.id}, Name: {provider.name}")  # Debugging line
+
+#     return render(request, 'search.html', context)
+
 @login_required
 def service_detail(request, service_provider_id):
     service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
@@ -313,6 +376,7 @@ def provider_dashboard(request, service_provider_id):
     }
     return render(request, 'provider_dashboard.html', context)
 
+@login_required
 def client_dashboard(request):
     user = {
         'name': 'Mary Cleveland',
@@ -370,10 +434,10 @@ def support(request):
 
     return render(request, 'support.html')
 
-def logout(request):
-    logout(request)
+def logout_view(request):
+    auth_logout(request)
     messages.success(request, 'You have been logged out successfully.')
-    return redirect('home.html')
+    return redirect('home')
 
 def booking_success(request):
     return render(request, 'booking_success.html')
