@@ -28,7 +28,8 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     
     # Custom login view
-    path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    # path('accounts/login/', CustomLoginView.as_view(), name='login'),
+    path('accounts/login/', views.login, name='login'),
     # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register, name='register'),

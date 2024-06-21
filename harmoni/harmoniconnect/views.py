@@ -242,10 +242,11 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            if hasattr(user, 'serviceprovider'):
+            if hasattr(user, 'service_provider'):
                 try:
                     dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': user.serviceprovider.id})
-                    return redirect('provider_dashboard')
+                    print('Redirecting User...')
+                    return redirect(dashboard_url)
                 except Exception as e:
                     print(f"Error reversing URL: {e}")
                     return render(request, 'login.html', {'error_message': "URL reversing error."})
