@@ -243,10 +243,13 @@ def login(request):
         if user is not None:
             auth_login(request, user)
             if hasattr(user, 'service_provider'): #Chnaged the argument serviceprovider to service_provider since its the right speeling atrribute assigned to the model
+                print(user.service_provider.id)
                 try:
                     #Changed the context name being passed to provider_dashboard template. used service_provider. Then in the template
                     #I accessed it in the templated getting the service provider id. service_provider.id
-                    dashboard_url = reverse('provider_dashboard', kwargs={'service_provider': user.service_provider})
+                    print(user.service_provider.id)
+                    service_provider_id = user.service_provider.id
+                    dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': service_provider_id})
                     print('Redirecting User...')
                     return redirect(dashboard_url) # i PASSED The url directly to b reversed to.
                 except Exception as e:
@@ -376,6 +379,7 @@ def provider_dashboard(request, service_provider_id):
     context = {
         'service_provider': service_provider,
         'bookings': bookings,
+        'service_provider_id': service_provider.id,
     }
     return render(request, 'provider_dashboard.html', context)
 

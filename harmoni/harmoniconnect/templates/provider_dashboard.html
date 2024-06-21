@@ -18,7 +18,7 @@
         <ul>
           <li><a href="{% url 'home' %}">Home</a></li>
           <!-- Here is where i have added the service provider id since its being needed as an argument to the provider_dashboard -->
-          <li><a href="{% url 'provider_dashboard' service_provider_id=service_provider.id %}">My Dashboard</a></li>
+          <li><a href="{% url 'provider_dashboard' service_provider_id=service_provider_id %}">My Dashboard</a></li>
 
           <li><a href="{% url 'support' %}">Support</a></li>
           <li><a href="{% url 'search' %}">Search</a></li>
