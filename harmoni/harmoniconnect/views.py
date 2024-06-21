@@ -242,11 +242,13 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            if hasattr(user, 'service_provider'):
+            if hasattr(user, 'service_provider'): #Chnaged the argument serviceprovider to service_provider since its the right speeling atrribute assigned to the model
                 try:
-                    dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': user.serviceprovider.id})
+                    #Changed the context name being passed to provider_dashboard template. used service_provider. Then in the template
+                    #I accessed it in the templated getting the service provider id. service_provider.id
+                    dashboard_url = reverse('provider_dashboard', kwargs={'service_provider': user.service_provider})
                     print('Redirecting User...')
-                    return redirect(dashboard_url)
+                    return redirect(dashboard_url) # i PASSED The url directly to b reversed to.
                 except Exception as e:
                     print(f"Error reversing URL: {e}")
                     return render(request, 'login.html', {'error_message': "URL reversing error."})
