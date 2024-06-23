@@ -309,7 +309,7 @@ def search(request):
 
     if category or (start_time and end_time):
         # Filter providers based on category and availability
-        query = ServiceProvider.objects.all()
+        query = ServiceProvider.objects.object()
         if category:
             query = query.filter(users__services__category=category)
         if start_time and end_time:
