@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views import generic
@@ -244,15 +245,15 @@ def login(request):
         
         if user is not None:
             auth_login(request, user)
-            try:
-                service_provider = user.service_provider  # This assumes OneToOneField
-                if not isinstance(service_provider, ServiceProvider):
-                    raise ValueError(f"Expected ServiceProvider instance, got {type(service_provider)}")
-                
-                dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': service_provider.id})
-                return redirect(dashboard_url)
-            except ServiceProvider.DoesNotExist:
-                return redirect('client_dashboard')
+            if hasattr(user, 'service_provider'):  # Check if the user is a service provider
+                try:
+                    service_provider_id = user.service_provider.id
+                    dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': service_provider_id})
+                    return redirect(dashboard_url)
+                except ServiceProvider.DoesNotExist:
+                    return render(request, 'login.html', {'error_message': "Service provider does not exist"})
+            else:
+                return redirect('client_dashboard')  # Redirect to client dashboard for non-service providers
         else:
             return render(request, 'login.html', {'error_message': "Invalid username or password"})
     else:
@@ -379,6 +380,9 @@ def client_dashboard(request):
     client = get_object_or_404(Client, user=request.user)
     scheduled_bookings = Booking.objects.filter(client=client, status='pending')
     completed_bookings = Booking.objects.filter(client=client, status='completed')
+    #This is what you missed in your code to fetch reviews.
+    reviews = Review.objects.filter(booking__client=client)  # Assuming you want to fetch reviews for the client
+   
 
     print(f"Client: {client}")
     print(f"Scheduled Bookings: {scheduled_bookings}")
