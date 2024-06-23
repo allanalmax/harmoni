@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from .permissions import IsServiceProvider
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Service, ServiceProvider, Booking, Review
+from .models import Service, ServiceProvider, Booking, Review, Availability
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy, reverse
 from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm
@@ -27,6 +27,7 @@ from django.db.models import Q
 from rest_framework.test import APIRequestFactory
 from django.db import IntegrityError, transaction
 import json
+import logging
 
 # ViewSets
 class CustomPermission(permissions.BasePermission):
@@ -72,10 +73,9 @@ class ServiceSearchViewSet(viewsets.ViewSet):
             try:
                 start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
                 end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
-                booked_services = Booking.objects.filter(
-                    booking_date__range=(start_time, end_time)
-                ).values_list('service', flat=True)
-                queryset = queryset.exclude(id__in=booked_services)
+                # Filter services based on availability that overlaps with the specified time range
+                queryset = queryset.filter(provider__availabilities__start_time__lte=end_time,
+                                           provider__availabilities__end_time__gte=start_time)
             except ValueError:
                 # Handle the error if the dates are not in the correct format
                 pass
@@ -112,8 +112,9 @@ class ServiceSearchViewSet(viewsets.ViewSet):
             try:
                 availability_start = datetime.strptime(availability_start, '%Y-%m-%dT%H:%M:%S')
                 availability_end = datetime.strptime(availability_end, '%Y-%m-%dT%H:%M:%S')
-                query &= Q(services__provider__availabilities__start_time__gte=availability_start,
-                           services__provider__availabilities__end_time__lte=availability_end)
+                # Filter providers based on availability that overlaps with the specified time range
+                query &= Q(availabilities__start_time__lte=availability_end,
+                           availabilities__end_time__gte=availability_start)
             except ValueError:
                 # Handle the error if the dates are not in the correct format
                 pass
@@ -299,6 +300,7 @@ def provider_register(request):
         form = ServiceProviderCreationForm()
     return render(request, 'provider_register.html', {'form': form})
 
+logger = logging.getLogger(__name__)
 def search(request):
     """
     Handles search requests for service providers based on user input.
@@ -306,65 +308,44 @@ def search(request):
 
     # Capture search criteria from request parameters
     category = request.GET.get('category')
-    budget = request.GET.get('budget')
-    availability_start = request.GET.get('start_time')
-    availability_end = request.GET.get('end_time')
+    start_time = request.GET.get('start_time')
+    end_time = request.GET.get('end_time')
+
+    logger.debug(f"Search parameters - Category: {category}, Start Time: {start_time}, End Time: {end_time}")
 
     # Initialize search results
     search_results = None
 
-    if category or budget or availability_start or availability_end:
-        # Use ServiceSearchViewSet for complex filtering logic
-        search_results = ServiceSearchViewSet.as_view({'get': 'list'})(request).data
+    if category or (start_time and end_time):
+        # Filter providers based on category and availability
+        query = ServiceProvider.objects.all()
+        if category:
+            query = query.filter(services__category__contains='category')
+            logger.debug(f"Filtered by category: {search_results}")
+        if start_time and end_time:
+            try:
+                start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
+                end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
+                query = query.filter(
+                    availabilities__start_time__lte=end_time,
+                    availabilities__end_time__gte=start_time
+                )
+            except Exception as e:
+                print(f"Error processing availability: {e}")
+        search_results = query.distinct()
 
     # Fetch Popular or Featured Providers (modify based on your logic)
-    popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]  # Assuming a boolean 'is_featured' field
+    popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]
 
-    context = {'search_results': search_results, 'popular_providers': popular_providers}
+    service_categories = Service.service_categories
+
+    context = {
+        'search_results': search_results,
+        'popular_providers': popular_providers,
+        'service_categories': service_categories
+    }
 
     return render(request, 'search.html', context)
-
-# def search(request):
-#     """
-#     Handles search requests for service providers based on user input.
-#     """
-
-#     # Capture search criteria from request parameters
-#     query = request.GET.get('q', '')  # Get search query
-#     category = request.GET.get('category')
-#     budget = request.GET.get('budget')
-#     availability_start = request.GET.get('start_time')
-#     availability_end = request.GET.get('end_time')
-
-#     # Initialize search results
-#     search_results = ServiceProvider.objects.all()
-
-#     # Perform search based on category match
-#     if query:
-#         search_results = search_results.filter(
-#             Q(services__category__icontains=query) |
-#             Q(services__name__icontains=query)
-#         ).distinct()
-
-#     # Apply additional filters if provided
-#     if category:
-#         search_results = search_results.filter(services__category__icontains=category).distinct()
-#     if budget:
-#         search_results = search_results.filter(services__price__lte=budget).distinct()
-#     if availability_start and availability_end:
-#         search_results = search_results.filter(
-#             availabilities__start_time__lte=availability_start,
-#             availabilities__end_time__gte=availability_end
-#         ).distinct()
-
-#     # Fetch Popular or Featured Providers (modify based on your logic)
-#     popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]  # Assuming a boolean 'is_featured' field
-
-#     context = {'search_results': search_results, 'popular_providers': popular_providers, 'query': query}
-#     for provider in search_results:
-#         print(f"Provider ID: {provider.id}, Name: {provider.name}")  # Debugging line
-
-#     return render(request, 'search.html', context)
 
 @login_required
 def service_detail(request, service_provider_id):

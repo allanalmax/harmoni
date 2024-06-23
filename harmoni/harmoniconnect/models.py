@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
     is_service_provider = models.BooleanField(default=False)  # Identify if the user is a service provider
 
 class ServiceProvider(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='service_provider')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='service_provider')
     location = models.CharField(max_length=255)
     average_rating = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(5.0)])
     name = models.CharField(max_length=255, default='Provider name')
@@ -27,13 +27,13 @@ class ServiceProvider(models.Model):
         return self.user.username
 
 class Client(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='client')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='client')
 
     def __str__(self):
         return self.user.username
 
 class Service(models.Model):
-    SERVICE_CATEGORIES = [
+    service_categories = [
         ('Dance', 'Dance'),
         ('Music', 'Music'),
         ('MC', 'Master of Ceremonies'),
@@ -44,7 +44,7 @@ class Service(models.Model):
     location = models.CharField(max_length=255, default='')
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    category = models.CharField(max_length=50, choices=SERVICE_CATEGORIES)
+    category = models.CharField(max_length=50, choices=service_categories)
 
     def __str__(self):
         return f"{self.name} by {self.provider.user.username}"

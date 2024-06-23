@@ -36,45 +36,41 @@
     <aside class="filter-section">
       <div class="search-bar">
         <form method="get" action="{% url 'search' %}">
-          <input type="search" id="search" name="search" placeholder="Search" />
+          <select name="category" id="category">
+            <option value="">Select a category</option>
+            {% for category_key, category_name in service_categories %}
+            <option value="{{ category_key }}">{{ category_name }}</option>
+            {% endfor %}
+          </select>
           <button type="submit">Search</button>
         </form>
       </div>
+
       <h2>Filter</h2>
       <form method="get" action="{% url 'search' %}">
         <div class="filter-form">
-          <div>
-            <div class="form-group">
-              <label for="budget">Budget*</label>
-              <select id="budget" name="budget">
-                <option value="1000000">1,000,000</option>
-                <option value="5000000">5,000,000</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="availability">Availability*</label>
-              <input type="date" id="availability" name="start_time" placeholder="start_date" />
-              <input type="date" id="availability_end" name="end_time" placeholder="end_date" />
-            </div>
+          <div class="form-group">
+            <label for="budget">Budget*</label>
+            <select id="budget" name="budget">
+              <option value="1000000">1,000,000</option>
+              <option value="5000000">5,000,000</option>
+            </select>
           </div>
-          <div class="right-filter">
-            <div class="form-group">
-              <label for="services">Services*</label>
-              <select id="services" name="category">
-                <option value="Dance">Dancers</option>
-                <option value="Master of Ceremonies">MC</option>
-                <option value="Music">Musicians</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="ratings">Ratings*</label>
-              <select id="ratings" name="ratings">
-                <option value="5">5 star</option>
-                <option value="4">4 star</option>
-                <option value="3">3 star</option>
-                <option value="2">2 star</option>
-              </select>
-            </div>
+
+          <div class="form-group">
+            <label for="availability">Availability*</label>
+            <input type="date" id="availability" name="start_time" placeholder="start_date" />
+            <input type="date" id="availability_end" name="end_time" placeholder="end_date" />
+          </div>
+
+          <div class="form-group">
+            <label for="ratings">Ratings*</label>
+            <select id="ratings" name="ratings">
+              <option value="5">5 star</option>
+              <option value="4">4 star</option>
+              <option value="3">3 star</option>
+              <option value="2">2 star</option>
+            </select>
           </div>
         </div>
         <button type="submit" class="filter-button">Apply Filters</button>
@@ -116,61 +112,6 @@
       {% endif %}
       {% endif %}
     </section>
-
-    <!-- <section class="dancer-listings">
-      {% if search_results %}
-      <h2>Search Results</h2>
-      <ul>
-        {% for provider in search_results %}
-        <article class="dancer-item">
-          <img src="{{ provider.image_url }}" alt="{{ provider.name }} image" />
-          <div class="dancer-info">
-            <h3>{{ provider.name }}</h3>
-            <p class="description">{{ provider.description }}</p>
-          <a href="{% url 'service_detail' provider.id %}" class="details-button">Details</a>
-            <a href="{% if service.provider.id %}{% url 'service_detail' service.provider.id %}{% endif %}"
-              class="details-button">Details</a>
-          Debugging line
-            <p>ID: {{ provider.id }}</p>
-          </div>
-        </article>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <h2>Popular Service Providers</h2>
-      {% if popular_providers %}
-      <ul>
-        {% for provider in popular_providers %}
-        <article class="dancer-item">
-          <img src="{{ provider.image_url }}" alt="{{ provider.name }} image" />
-          <div class="dancer-info">
-            <h3>{{ provider.name }}</h3>
-            <p class="description">{{ provider.description }}</p>
-          <a href="{% url 'service_detail' provider.id %}" class="details-button">Details</a>
-            <a href="{% if service.provider.id %}{% url 'service_detail' service.provider.id %}{% endif %}"
-              class="details-button">Details</a>
-          Debugging line 
-            <p>ID: {{ provider.id }}</p>
-          </div>
-        </article>
-        {% endfor %}
-      </ul>
-      {% else %}
-      <p>No popular service providers found at this time.</p>
-      {% endif %}
-      {% endif %}
-    </section>
-
-  Add form for filtering search results
-    <form method="get" action="{% url 'search' %}">
-      <input type="text" name="q" value="{{ query }}" placeholder="Search..." />
-      <input type="text" name="category" placeholder="Category" />
-      <input type="number" name="budget" placeholder="Max Budget" />
-      <input type="datetime-local" name="start_time" placeholder="Start Time" />
-      <input type="datetime-local" name="end_time" placeholder="End Time" />
-      <button type="submit">Search</button>
-    </form> -->
-
     <nav class="pagination">
       <a href="#" aria-label="Previous">&lt;</a>
       <a href="#">1</a>
