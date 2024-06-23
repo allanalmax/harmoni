@@ -36,7 +36,7 @@
           src="{{ service_provider.image_url }}"
           alt="{{ service_provider.name }}"
         />
-        <button class="book-button">Book Service</button>
+        <button class="book-button"><a href="{% url 'book_service' %}">Book Service</a></button>
 
         <div class="service-description">
           <h2>About {{ service_provider.name }}</h2>
@@ -47,7 +47,7 @@
           <h2>What We Offer:</h2>
           <ul>
             {% for offer in service_provider.offers %}
-            <li>{{ offer }}</li>
+            <p>{{ offer }}</p>
             {% endfor %}
           </ul>
         </div>

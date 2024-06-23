@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from harmoniconnect import views
-from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, BookingViewSet, ReviewViewSet, SignUpView, ServiceSearchViewSet
+from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, ReviewViewSet, SignUpView, ServiceSearchViewSet
 from harmoniconnect.views import CustomLoginView
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
@@ -13,7 +13,7 @@ from django.contrib.auth.views import LoginView
 router = DefaultRouter()
 router.register(r'services', ServiceViewSet)
 router.register(r'serviceproviders', ServiceProviderViewSet)
-router.register(r'bookings', BookingViewSet)
+# router.register(r'bookings', BookingViewSet)
 router.register(r'reviews', ReviewViewSet)
 router.register(r'services/search', ServiceSearchViewSet, basename='service-search')
 
@@ -35,7 +35,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('register/customer/', views.customer_register, name='customer_register'),
     path('register/provider/', views.provider_register, name='provider_register'),
-    
     path('search/', views.search, name='search'),
     path('service-providers/<int:service_provider_id>/', views.service_detail, name='service_detail'),
     path('service-provider-dashboard/<int:service_provider_id>/', views.provider_dashboard, name='provider_dashboard'),
@@ -43,6 +42,7 @@ urlpatterns = [
     path('client_dashboard/', views.client_dashboard, name='client_dashboard'),
     path('booking_success/', views.booking_success, name='booking_success'),
     path('reviews/', views.reviews, name='reviews'),
+    path('book_service/', views.book_service, name='book_service'),
 
     # path('test_search/', views.test_search, name='test_search'),
 ]
