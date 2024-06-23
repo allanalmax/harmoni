@@ -1,133 +1,133 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{ service_provider.name }}</title>
-    <link rel="stylesheet" href="{% static 'css/service_detail.css' %}" />
-  </head>
 
-  <body>
-    <header class="main-header">
-      <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
-      <div class="container">
-        <nav class="navigation">
-          <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
-            <li><a href="{% url 'support' %}">Support</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ service_provider.name }}</title>
+  <link rel="stylesheet" href="{% static 'css/service_detail.css' %}" />
+</head>
 
-    <div>
-      <a href="javascript:window.history.back();"
-        ><i class="fa fa-arrow-left"></i
-      ></a>
+<body>
+  <header class="main-header">
+    <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+    <div class="container">
+      <nav class="navigation">
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
+          <li><a href="{% url 'support' %}">Support</a></li>
+        </ul>
+      </nav>
     </div>
+  </header>
 
-    <main class="container">
-      <section class="service-detail">
-        <a href="{% url 'search' %}" class="back-button">←</a>
-        <h1>{{ service_provider.name }}</h1>
-        <img
-          src="{{ service_provider.image_url }}"
-          alt="{{ service_provider.name }}"
-        />
-        <button class="book-button"><a href="{% url 'book_service' %}">Book Service</a></button>
+  <div>
+    <a href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a>
+  </div>
 
-        <div class="service-description">
-          <h2>About {{ service_provider.name }}</h2>
-          <p>{{ service_provider.description }}</p>
-        </div>
+  <main class="container">
+    <section class="service-detail">
+      <a href="{% url 'search' %}" class="back-button">←</a>
+      <h1>{{ service_provider.name }}</h1>
+      <img src="{{ service_provider.image_url }}" alt="{{ service_provider.name }}" />
+      <button class="book-button"><a href="{% url 'book_service' %}">Book Service</a></button>
 
-        <div class="service-offer">
-          <h2>What We Offer:</h2>
-          <ul>
-            {% for offer in service_provider.offers %}
-            <p>{{ offer }}</p>
-            {% endfor %}
-          </ul>
-        </div>
+      <div class="service-description">
+        <h2>About {{ service_provider.name }}</h2>
+        <p>{{ service_provider.description }}</p>
+      </div>
 
-        <div class="service-pricing">
-          <p>
-            <strong>Pricing Information:</strong> {{ service_provider.pricing }}
-          </p>
-          <p>
-            <strong>Availability:</strong> {{
-            service_provider.availability_description }}
-          </p>
-        </div>
+      <div class="service-offer">
+        <h2>What We Offer:</h2>
+        <ul>
+          {% for offer in offers %}
+          <li>{{ offer }}</li>
+          {% endfor %}
+        </ul>
+      </div>
 
-        <div class="reviews">
-          <h2>Reviews:</h2>
-          <div class="review-list">
-            {% for review in service_provider.reviews %}
-            <div class="review-item">
-              <img
-                src="{{ review.reviewer_avatar }}"
-                alt="{{ review.reviewer_name }}"
-              />
-              <h3>{{ review.reviewer_name }}</h3>
-              <p class="rating">{{ review.rating }} stars</p>
-              <p>{{ review.text }}</p>
-            </div>
-            {% endfor %}
+      <div class="service-pricing">
+        <h2>Pricing Information:</h2>
+        <ul>
+          {% for price in service_provider.pricing %}
+          <li>{{ price }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="service-availability">
+        <h2>Availability:</h2>
+        <ul>
+          {% for availability in service_provider.availability_description %}
+          <li>{{ availability }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="reviews">
+        <h2>Reviews:</h2>
+        <div class="review-list">
+          {% for review in service_provider.reviews %}
+          <div class="review-item">
+            <img src="{{ review.reviewer_avatar }}" alt="{{ review.reviewer_name }}" />
+            <h3>{{ review.reviewer_name }}</h3>
+            <p class="rating">{{ review.rating }} stars</p>
+            <p>{{ review.text }}</p>
           </div>
+          {% endfor %}
         </div>
+      </div>
 
-        <button class="inquiry-button">Send an Inquiry</button>
-      </section>
-    </main>
+      <button class="inquiry-button">Send an Inquiry</button>
+    </section>
+  </main>
 
-    <footer class="main-footer">
-      <div class="container">
-        <div class="upper-footer">
-          <img
-            src="{% static '/images/logo.jpg' %}"
-            alt="Logo"
-            class="footer-logo"
-          />
-          <div class="footer-links">
-            <div>
-              <h4>Community</h4>
-              <ul>
-                <li><a href="#featured-events">Featured events</a></li>
-                <li><a href="#promotions">Promotions</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4>Company</h4>
-              <ul>
-                <li><a href="{% url 'about' %}">About us</a></li>
-                <li><a href="#contact">Contact us</a></li>
-              </ul>
-            </div>
-            <div class="footer-auth">
-              <a href="{% url 'register' %}" class="button">Register</a>
-              {% if user.is_authenticated %}
-              <a href="{% url 'logout' %}" class="button">Log out</a>
-              {% else %}
-              <a href="{% url 'login' %}" class="button">Log in</a>
-              {% endif %}
-            </div>
+  <footer class="main-footer">
+    <div class="container">
+      <div class="upper-footer">
+        <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo" />
+        <div class="footer-links">
+          <div>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#featured-events">Featured events</a></li>
+              <li><a href="#promotions">Promotions</a></li>
+            </ul>
           </div>
-        </div>
-        <div class="social-media">
-          <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
-          <div class="social-links">
-            <p>Follow us:</p>
-            <a href="#" class="fa fa-facebook"></a>
-            <a href="#" class="fa fa-twitter"></a>
-            <a href="#" class="fa fa-instagram"></a>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="{% url 'about' %}">About us</a></li>
+              <li><a href="#contact">Contact us</a></li>
+            </ul>
+          </div>
+          <div class="footer-auth">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="button">Register</a>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="button">Log out</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Log in</a>
+            {% endif %}
           </div>
         </div>
       </div>
-    </footer>
+      <div class="social-media">
+        <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
+        <div class="social-links">
+          <p>Follow us:</p>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-instagram"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
-    <script src="{% static 'js/service_detail.js' %}"></script>
-  </body>
+  <script src="{% static 'js/service_detail.js' %}"></script>
+</body>
+
 </html>

@@ -5,6 +5,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db.models import Avg
 from django.conf import settings
+from django.utils.translation import gettext as _
+import json
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)  # Added unique email field
@@ -25,6 +27,12 @@ class ServiceProvider(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+    def get_offers(self):
+        try:
+            return json.loads(self.offers)
+        except json.JSONDecodeError:
+            return []
 
 class Client(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='client')
@@ -40,7 +48,7 @@ class Service(models.Model):
         # Add more categories as needed
     ]
     name = models.CharField(max_length=255)
-    provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE, related_name='services')
+    provider = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='services')
     location = models.CharField(max_length=255, default='')
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)

@@ -243,7 +243,7 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            if hasattr(user, 'service_provider'): #Chnaged the argument serviceprovider to service_provider since its the right speeling atrribute assigned to the model
+            if hasattr(user, 'service_provider'): #Changed the argument serviceprovider to service_provider since its the right spelling atrribute assigned to the model
                 print(user.service_provider.id)
                 try:
                     #Changed the context name being passed to provider_dashboard template. used service_provider. Then in the template
@@ -300,18 +300,11 @@ def provider_register(request):
         form = ServiceProviderCreationForm()
     return render(request, 'provider_register.html', {'form': form})
 
-logger = logging.getLogger(__name__)
 def search(request):
-    """
-    Handles search requests for service providers based on user input.
-    """
-
     # Capture search criteria from request parameters
     category = request.GET.get('category')
     start_time = request.GET.get('start_time')
     end_time = request.GET.get('end_time')
-
-    logger.debug(f"Search parameters - Category: {category}, Start Time: {start_time}, End Time: {end_time}")
 
     # Initialize search results
     search_results = None
@@ -320,8 +313,7 @@ def search(request):
         # Filter providers based on category and availability
         query = ServiceProvider.objects.all()
         if category:
-            query = query.filter(services__category__contains='category')
-            logger.debug(f"Filtered by category: {search_results}")
+            query = query.filter(users__services__category=category)
         if start_time and end_time:
             try:
                 start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
@@ -349,7 +341,11 @@ def search(request):
 
 @login_required
 def service_detail(request, service_provider_id):
-    service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
+    service_provider = ServiceProvider.objects.get(id=service_provider_id)
+    service_provider.offers = json.loads(service_provider.offers)
+    service_provider.pricing = json.loads(service_provider.pricing)
+    service_provider.availability_description = json.loads(service_provider.availability_description)
+    
     context = {'service_provider': service_provider}
     return render(request, 'service_detail.html', context)
 
