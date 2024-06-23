@@ -6,18 +6,18 @@ from .models import Booking, Review, Service, CustomUser, ServiceProvider
 
 User = get_user_model()
 
-class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+# class UserRegisterForm(UserCreationForm):
+#     email = forms.EmailField(required=True)
 
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
+#     class Meta:
+#         model = User
+#         fields = ['username', 'email', 'password1', 'password2']
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
-            raise ValidationError("A user with this email already exists.")
-        return email
+#     def clean_email(self):
+#         email = self.cleaned_data.get('email')
+#         if User.objects.filter(email=email).exists():
+#             raise ValidationError("A user with this email already exists.")
+#         return email
 
 # class ServiceBookingForm(forms.ModelForm):
 #     class Meta:

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework import routers
 from harmoniconnect import views
-from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, ReviewViewSet, SignUpView, ServiceSearchViewSet
+from harmoniconnect.views import ServiceViewSet, ServiceProviderViewSet, ReviewViewSet, ServiceSearchViewSet
 from harmoniconnect.views import CustomLoginView
 from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter

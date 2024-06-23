@@ -24,7 +24,7 @@ body {
       }
 
 .main-header {
-        background-color: #ad4242;
+        background-color: #fff;
         display: flex;
         justify-content: space-between;
         align-items: flex-end ;
