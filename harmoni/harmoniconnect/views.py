@@ -245,7 +245,8 @@ def login(request):
         
         if user is not None:
             auth_login(request, user)
-            if hasattr(user, 'service_provider'):  # Check if the user is a service provider
+            #It's better using this method. it will reduce the if condition statements if you are to check theuser is-service provider
+            if hasattr(user, 'service_provider'):  # Check if the user is a service provider.
                 try:
                     service_provider_id = user.service_provider.id
                     dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': service_provider_id})
