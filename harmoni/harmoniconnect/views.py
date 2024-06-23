@@ -1,4 +1,6 @@
+import datetime
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from django.views import generic
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_protect
@@ -14,8 +16,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import Service, ServiceProvider, Booking, Review, Availability, Client
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy, reverse
-from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm, BookingForm
-from datetime import datetime, timezone
+from .forms import ServiceProviderCreationForm, CustomUserCreationForm, BookingForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -187,10 +188,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 # Generic views for user registration and static pages
-class SignUpView(generic.CreateView):
-    form_class = UserRegisterForm
-    success_url = reverse_lazy('login')
-    template_name = 'registration/signup.html'
+# class SignUpView(generic.CreateView):
+#     form_class = UserRegisterForm
+#     success_url = reverse_lazy('login')
+#     template_name = 'registration/signup.html'
 
 class CustomLoginView(LoginView):
     template_name = 'login.html'
@@ -241,27 +242,23 @@ def login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             auth_login(request, user)
-            if hasattr(user, 'service_provider'): #Changed the argument serviceprovider to service_provider since its the right spelling atrribute assigned to the model
-                print(user.service_provider.id)
+            if hasattr(user, 'service_provider'):  # Check if the user is a service provider
                 try:
-                    #Changed the context name being passed to provider_dashboard template. used service_provider. Then in the template
-                    #I accessed it in the templated getting the service provider id. service_provider.id
-                    print(user.service_provider.id)
                     service_provider_id = user.service_provider.id
                     dashboard_url = reverse('provider_dashboard', kwargs={'service_provider_id': service_provider_id})
-                    print('Redirecting User...')
-                    return redirect(dashboard_url) # i PASSED The url directly to b reversed to.
-                except Exception as e:
-                    print(f"Error reversing URL: {e}")
-                    return render(request, 'login.html', {'error_message': "URL reversing error."})
+                    return redirect(dashboard_url)
+                except ServiceProvider.DoesNotExist:
+                    return render(request, 'login.html', {'error_message': "Service provider does not exist"})
             else:
-                return redirect('client_dashboard')
+                return redirect('client_dashboard')  # Redirect to client dashboard for non-service providers
         else:
-            error_message = "Invalid username or password."
-            return render(request, 'registration/login.html', {'error_message': error_message})
-    return render(request, 'login.html')
+            return render(request, 'login.html', {'error_message': "Invalid username or password"})
+    else:
+        return render(request, 'login.html')
+
 
 def register(request):
     return render(request, 'register.html')
@@ -352,9 +349,19 @@ def service_detail(request, service_provider_id):
 @login_required
 def provider_dashboard(request, service_provider_id):
     service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
-    pending_bookings = Booking.objects.filter(service__provider=service_provider.user, status='pending')
-    scheduled_bookings = Booking.objects.filter(service__provider=service_provider.user, status='confirmed')
-    completed_bookings = Booking.objects.filter(service__provider=service_provider.user, status='completed')
+
+        # Get all services provided by the service provider
+    services = Service.objects.filter(provider=service_provider)
+    
+    # Filter bookings by these services
+    pending_bookings = Booking.objects.filter(service__in=services, status='pending')
+    scheduled_bookings = Booking.objects.filter(service__in=services, status='confirmed')
+    completed_bookings = Booking.objects.filter(service__in=services, status='completed')
+
+    print(f"Pending Bookings: {pending_bookings}")
+    print(f"Scheduled Bookings: {scheduled_bookings}")
+    print(f"Completed Bookings: {completed_bookings}")
+
     context = {
         'service_provider': service_provider,
         'service_provider_id': service_provider.id,
@@ -366,9 +373,16 @@ def provider_dashboard(request, service_provider_id):
 
 @login_required
 def client_dashboard(request):
-    client = request.user.client
+    client = get_object_or_404(Client, user=request.user)
     scheduled_bookings = Booking.objects.filter(client=client, status='pending')
     completed_bookings = Booking.objects.filter(client=client, status='completed')
+    #This is what you missed in your code to fetch reviews.
+    reviews = Review.objects.filter(booking__client=client)  # Assuming you want to fetch reviews for the client
+   
+
+    print(f"Client: {client}")
+    print(f"Scheduled Bookings: {scheduled_bookings}")
+    print(f"Completed Bookings: {completed_bookings}")
 
     context = {
         'client': client,
@@ -411,10 +425,7 @@ def reviews(request):
     return render(request, 'reviews.html')
 
 logger = logging.getLogger(__name__)
-
 def book_service(request):
-    service = get_object_or_404(Service)
-    
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
@@ -422,28 +433,28 @@ def book_service(request):
             
             booking = form.save(commit=False)
             booking.client = Client.objects.get(user=request.user)
-            booking.service = service
+            
+            # Combine booking_date and event_time into a single timezone-aware datetime
             
             booking.booking_date = timezone.make_aware(
-                timezone.datetime.combine(form.cleaned_data['booking_date'], form.cleaned_data['event_time'])
-            )
+            timezone.datetime.combine(form.cleaned_data['booking_date'], form.cleaned_data['event_time']))
+            # Save other form fields directly to the Booking instance
             booking.status = 'pending'
             booking.name = form.cleaned_data['name']
             booking.contact = form.cleaned_data['contact']
             booking.email = form.cleaned_data['email']
             booking.location = form.cleaned_data['location']
             
-            
             logger.info(f"Booking details: {booking}")
             
             booking.save()
             logger.info("Booking saved successfully!")
             
-            return render(request, 'success.html', {'booking': booking})
+            return render(request, 'booking_success.html', {'booking': booking})
         else:
             logger.error("Form is invalid")
             logger.error(form.errors)
     else:
-        form = BookingForm(initial={'service': service})
+        form = BookingForm()
 
-    return render(request, 'book_service.html', {'form': form, 'service': service})
+    return render(request, 'book_service.html', {'form': form})
