@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    {% load static %}
+<head>
+    <title>Book A Service</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/book_service.css' %}">
+</head>
+<body>
+    <header class="main-header">
+        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+        <div class="container">
+          <nav class="navigation">
+            <ul>
+              <li><a href="{% url 'home' %}">Home</a></li>
+              {% if user.is_authenticated %}
+              <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
+              {% else %}
+              <li><a href="{% url 'login' %}">Login</a></li>
+              {% endif %}
+              <li><a href="{% url 'support' %}">Support</a></li>
+              <li><a href="{% url 'search' %}">Search</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+    <div class="formcontainer">
+        <h1>Book A Service for your Event</h1>
+        <p><strong>Please fill out this form below to book this service</strong></p>
+        <form method="post">
+            {% csrf_token %}
+            <label for="id_service">Service*:</label>
+            {{ form.service }}
+            <label for="id_booking_date">Event Date*:</label>
+            {{ form.booking_date }}
+            <label for="id_event_time">Event Time*:</label>
+            {{ form.event_time }}
+            <label for="id_location">Location*:</label>
+            {{ form.location }}
+            <label for="id_special_request">Special Request:</label>
+            {{ form.special_request }}
+            <p><strong>Please fill in your information for the service provider</strong></p>
+            <label for="id_name">Name:</label>
+            <input type="text" name="name" id="id_name" required>
+            <label for="id_contact">Contact:</label>
+            <input type="text" name="contact" id="id_contact" required>
+            <label for="id_email">Email:</label>
+            <input type="email" name="email" id="id_email" required>
+            <button type="submit"><a href="{% url 'booking_success' %}">Book Service  </a>
+          </button>
+        </form>
+    </div>
+</body>
+</html>

@@ -49,15 +49,6 @@ body {
     color: #007bff;
 }
 
-.search-bar input[type="search"] {
-    padding: 5px;
-    margin-right: 10px;
-}
-
-.search-bar button {
-    padding: 5px 10px;
-}
-
 .service-detail {
     background-color: #fff;
     padding: 20px;
@@ -67,18 +58,19 @@ body {
 
 .service-detail h1 {
     text-align: center;
+    margin-bottom: 10px; /* Adjust margin for better spacing */
 }
 
 .service-detail img {
     width: 100%;
-    max-width: 600px;
+    max-width: 100%; /* Adjust image width */
     display: block;
-    margin: 0 auto 20px;
+    margin: 0 auto 20px; /* Center align image with margin */
+    border-radius: 5px; /* Add border-radius for rounded corners */
 }
 
 .book-button,
 .inquiry-button {
-    display: block;
     width: 100%;
     max-width: 200px;
     margin: 20px auto;
@@ -88,21 +80,9 @@ body {
     text-align: center;
     text-decoration: none;
     border-radius: 5px;
+    display: block; /* Ensure buttons are block elements */
 }
 
-.service-description,
-.service-offer,
-.service-pricing,
-.reviews {
-    margin-bottom: 20px;
-}
-
-.reviews .review-item {
-    background-color: #f4f4f4;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-}
 
 /* footer section */
 .main-footer {

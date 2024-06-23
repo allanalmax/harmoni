@@ -115,6 +115,7 @@ body {
 .tab-content {
     display: none;
     background-color: white;
+
 }
 
 .tab-content.active {

@@ -11,11 +11,11 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from .permissions import IsServiceProvider
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Service, ServiceProvider, Booking, Review, Availability
+from .models import Service, ServiceProvider, Booking, Review, Availability, Client
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy, reverse
-from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm
-from datetime import datetime
+from .forms import UserRegisterForm, ServiceProviderCreationForm, CustomUserCreationForm, BookingForm
+from datetime import datetime, timezone
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -147,39 +147,39 @@ class ServiceProviderViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
-class BookingViewSet(viewsets.ModelViewSet):
-    queryset = Booking.objects.all().select_related('client', 'service')
-    serializer_class = BookingSerializer
-    permission_classes = [permissions.IsAuthenticated]
+# class BookingViewSet(viewsets.ModelViewSet):
+#     queryset = Booking.objects.all().select_related('client', 'service')
+#     serializer_class = BookingSerializer
+#     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        user = self.request.user
-        if user.is_authenticated:
-            # Check if the user can specify any client (e.g., staff members)
-            if 'client' in serializer.validated_data and user.is_staff:
-                serializer.save()
-            elif hasattr(user, 'client'):
-                # For regular authenticated users who cannot specify a client
-                serializer.save(client=user.client)
-            else:
-                # If the user does not have a client associated and is not staff
-                raise PermissionDenied("You do not have permission to create a booking without a specified client.")
-        else:
-            # If the user is not authenticated
-            raise PermissionDenied("Authentication is required to create bookings.")
+#     def perform_create(self, serializer):
+#         user = self.request.user
+#         if user.is_authenticated:
+#             # Check if the user can specify any client (e.g., staff members)
+#             if 'client' in serializer.validated_data and user.is_staff:
+#                 serializer.save()
+#             elif hasattr(user, 'client'):
+#                 # For regular authenticated users who cannot specify a client
+#                 serializer.save(client=user.client)
+#             else:
+#                 # If the user does not have a client associated and is not staff
+#                 raise PermissionDenied("You do not have permission to create a booking without a specified client.")
+#         else:
+#             # If the user is not authenticated
+#             raise PermissionDenied("Authentication is required to create bookings.")
 
 
-    @action(detail=True, methods=['post'])
-    def confirm_booking(self, request, pk=None):
-        """
-        Custom action to confirm a booking.
-        """
-        booking = self.get_object()
-        if booking.client.user != request.user:
-            return Response({'error': 'You do not have permission to confirm this booking'}, status=status.HTTP_403_FORBIDDEN)
-        booking.status = 'confirmed'
-        booking.save()
-        return Response({'status': 'booking confirmed'})
+#     @action(detail=True, methods=['post'])
+#     def confirm_booking(self, request, pk=None):
+#         """
+#         Custom action to confirm a booking.
+#         """
+#         booking = self.get_object()
+#         if booking.client.user != request.user:
+#             return Response({'error': 'You do not have permission to confirm this booking'}, status=status.HTTP_403_FORBIDDEN)
+#         booking.status = 'confirmed'
+#         booking.save()
+#         return Response({'status': 'booking confirmed'})
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all().select_related('booking')
@@ -356,48 +356,28 @@ def service_detail(request, service_provider_id):
 @login_required
 def provider_dashboard(request, service_provider_id):
     service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
-    bookings = Booking.objects.filter(service__provider=service_provider.user)
+    pending_bookings = Booking.objects.filter(service__provider=service_provider.user, status='pending')
+    scheduled_bookings = Booking.objects.filter(service__provider=service_provider.user, status='confirmed')
+    completed_bookings = Booking.objects.filter(service__provider=service_provider.user, status='completed')
     context = {
         'service_provider': service_provider,
-        'bookings': bookings,
         'service_provider_id': service_provider.id,
+        'pending_bookings': pending_bookings,
+        'scheduled_bookings': scheduled_bookings,
+        'completed_bookings': completed_bookings,
     }
     return render(request, 'provider_dashboard.html', context)
 
 @login_required
 def client_dashboard(request):
-    user = {
-        'name': 'Mary Cleveland',
-        'role': 'Client',
-    }
-    bookings = [
-        {
-            'booking_id': 'D00568',
-            'service': 'Singers',
-            'date_time': '2nd February, 3pm',
-            'location': 'Pearl Gardens',
-            'provider': 'ABC Singers',
-            'status': 'Completed',
-            'special_request': 'Keep Time'
-        }
-    ]
-    reviews = [
-        {
-            'user': 'Mary Cleveland',
-            'role': 'Client',
-            'rating': 4,
-            'text': 'A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. The process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.'
-        },
-        {
-            'user': 'Mary Cleveland',
-            'role': 'Client',
-            'rating': 3,
-            'text': 'A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. The process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.'
-        }
-    ]
+    client = request.user.client
+    scheduled_bookings = Booking.objects.filter(client=client, status='pending')
+    completed_bookings = Booking.objects.filter(client=client, status='completed')
+
     context = {
-        'user': user,
-        'bookings': bookings,
+        'client': client,
+        'scheduled_bookings': scheduled_bookings,
+        'completed_bookings': completed_bookings,
         'reviews': reviews,
     }
     return render(request, 'client_dashboard.html', context)
@@ -433,3 +413,41 @@ def booking_success(request):
 def reviews(request):
   
     return render(request, 'reviews.html')
+
+logger = logging.getLogger(__name__)
+
+def book_service(request):
+    service = get_object_or_404(Service)
+    
+    if request.method == 'POST':
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            logger.info("Form is valid. Proceeding to save booking...")
+            
+            booking = form.save(commit=False)
+            booking.client = Client.objects.get(user=request.user)
+            booking.service = service
+            
+            booking.booking_date = timezone.make_aware(
+                timezone.datetime.combine(form.cleaned_data['booking_date'], form.cleaned_data['event_time'])
+            )
+            booking.status = 'pending'
+            booking.name = form.cleaned_data['name']
+            booking.contact = form.cleaned_data['contact']
+            booking.email = form.cleaned_data['email']
+            booking.location = form.cleaned_data['location']
+            
+            
+            logger.info(f"Booking details: {booking}")
+            
+            booking.save()
+            logger.info("Booking saved successfully!")
+            
+            return render(request, 'success.html', {'booking': booking})
+        else:
+            logger.error("Form is invalid")
+            logger.error(form.errors)
+    else:
+        form = BookingForm(initial={'service': service})
+
+    return render(request, 'book_service.html', {'form': form, 'service': service})

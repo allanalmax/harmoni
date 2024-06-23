@@ -19,14 +19,14 @@ class UserRegisterForm(UserCreationForm):
             raise ValidationError("A user with this email already exists.")
         return email
 
-class ServiceBookingForm(forms.ModelForm):
-    class Meta:
-        model = Booking
-        fields = ['service', 'booking_date']
-        widgets = {
-            'booking_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
-            'service': forms.Select(attrs={'class': 'form-control'}),
-        }
+# class ServiceBookingForm(forms.ModelForm):
+#     class Meta:
+#         model = Booking
+#         fields = ['service', 'booking_date']
+#         widgets = {
+#             'booking_date': forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+#             'service': forms.Select(attrs={'class': 'form-control'}),
+#         }
 
 class ReviewForm(forms.ModelForm):
     class Meta:
@@ -112,3 +112,22 @@ class ServiceProviderCreationForm(UserCreationForm):
                 average_rating=0.0
             )
         return user
+    
+
+class BookingForm(forms.ModelForm):
+    event_time = forms.TimeField(required=True, widget=forms.TimeInput(format='%H:%M'))
+    name = forms.CharField(required=True)
+    contact = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    location = forms.CharField(required=True)
+    service = forms.ModelChoiceField(queryset=Service.objects.all(), empty_label=None)
+
+
+    class Meta:
+        model = Booking
+        fields = ['booking_date', 'service', 'special_request']
+
+    def __init__(self, *args, **kwargs):
+        super(BookingForm, self).__init__(*args, **kwargs)
+        self.fields['booking_date'].widget = forms.DateInput(attrs={'type': 'date'})
+        self.fields['service'].queryset = Service.objects.all()

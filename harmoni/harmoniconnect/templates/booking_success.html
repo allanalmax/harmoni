@@ -13,22 +13,27 @@
     <div class="container">
         <div class="success-card">
             <h2>Booking Successful</h2>
-            <p class="booking-id"> <strong>Booking ID:</strong> 810985832</p>
+            <p class="booking-id"><strong>Booking ID:</strong> {{ booking.id }}</p>
             <i class="fas fa-check success-icon"></i>
-            <h3>Service Provider Name</h3>
+            <h3>{{ booking.service.provider.name }}</h3>
             <div class="details">
                 <div class="detail">
                     <p>Date</p>
-                    <p>June 30 2024</p>
+                    <p>{{ booking.booking_date|date:"F d Y" }}</p>
                 </div>
                 <div class="detail">
                     <p>Time</p>
-                    <p>1300hrs</p>
+                    <p>{{ booking.booking_date|time:"H:i" }}</p>
+                </div>
+                <div class="detail">
+                    <p>Location</p>
+                    <p>{{ booking.location }}</p>
                 </div>
             </div>
             <a href="{% url 'home' %}" class="button primary">Go Back Home</a>
             <a href="{% url 'client_dashboard' %}" class="button secondary">Booking Details</a>
         </div>
     </div>
+    
 </body>
 </html>
