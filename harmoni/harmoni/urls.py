@@ -22,6 +22,7 @@ router.register(r'services/search', ServiceSearchViewSet, basename='service-sear
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    #For good practice alwalys have your app urls direted to urls.py in the app folder
     path('', include('harmoniconnect.urls')),
     path('api/', include(router.urls)),
 ]
