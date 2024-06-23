@@ -352,7 +352,7 @@ def provider_dashboard(request, service_provider_id):
     service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
 
         # Get all services provided by the service provider
-    services = Service.objects.filter(provider=service_provider)
+    services = Service.objects.filter(provider=service_provider.id)
     
     # Filter bookings by these services
     pending_bookings = Booking.objects.filter(service__in=services, status='pending')
