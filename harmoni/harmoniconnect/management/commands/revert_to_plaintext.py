@@ -10,16 +10,16 @@ class Command(BaseCommand):
         for provider in service_providers:
             try:
                 # Revert offers
-                if provider.offers and isinstance(provider.offers, str):
-                    provider.offers = json.loads(provider.offers)
+                if provider.offers and not isinstance(provider.offers, str):
+                    provider.offers = json.dumps(provider.offers)
 
                 # Revert pricing
-                if provider.pricing and isinstance(provider.pricing, str):
-                    provider.pricing = json.loads(provider.pricing)
+                if provider.pricing and not isinstance(provider.pricing, str):
+                    provider.pricing = json.dumps(provider.pricing)
 
                 # Revert availability_description
-                if provider.availability_description and isinstance(provider.availability_description, str):
-                    provider.availability_description = json.loads(provider.availability_description)
+                if provider.availability_description and not isinstance(provider.availability_description, str):
+                    provider.availability_description = json.dumps(provider.availability_description)
 
                 provider.save()
                 self.stdout.write(self.style.SUCCESS(f'Successfully reverted provider: {provider.name}'))
