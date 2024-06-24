@@ -471,6 +471,7 @@ def book_service(request):
 
 
 @login_required
+@csrf_protect
 def approve_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     
@@ -488,6 +489,7 @@ def approve_booking(request, booking_id):
     return redirect('provider_dashboard', service_provider_id=request.user.service_provider.id)
 
 @login_required
+@csrf_protect
 def decline_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
     
@@ -520,9 +522,6 @@ def complete_booking(request, booking_id):
         messages.success(request, "Booking completed successfully.")
         
     return redirect('provider_dashboard', service_provider_id=request.user.service_provider.id)
-
-
-
     
 def notifications(request):
     notifications = Notification.objects.filter(recipient=request.user, read=False)
