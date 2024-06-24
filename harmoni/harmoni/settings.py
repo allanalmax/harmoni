@@ -33,7 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'a14d-41-75-176-237.ngrok-free.app',
+    '52a1-41-75-176-237.ngrok-free.app',
+    'f736-41-202-230-115.ngrok-free.app',
 ]
 
 # Custom user model
@@ -42,6 +43,12 @@ AUTH_USER_MODEL = 'harmoniconnect.CustomUser'
 AUTHENTICATION_BACKENDS = [
     'harmoniconnect.custom_auth_backend.EmailOrUsernameBackend',
 ]
+
+# Add MTN MoMo API Credentials
+MTN_MOMO_USER_ID = '7be87d22-45d6-4179-8c53-9bf535915c81'
+MTN_MOMO_API_KEY = 'bf4fd9e7c3b540818ccd16ede313abdd'
+MTN_MOMO_SUBSCRIPTION_KEY = '2697063a7edb4d729f0c8ad83a41e8eb'
+MTN_MOMO_ENVIRONMENT = 'sandbox'  # or 'production'
 
 # Application definition
 INSTALLED_APPS = [
@@ -52,6 +59,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "harmoniconnect",
+    'payments',
     "rest_framework",
 ]
 
