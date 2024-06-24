@@ -35,7 +35,7 @@
     <div class="profile">
       <img src="{% static 'images/client.png' %}" alt="Profile Picture" width="80" height="80">
       <div>
-        <h2>Mary Cleveland</h2>
+        <h2>{{ client.user.username }}</h2>
         <p>Client</p>
       </div>
       <button>Edit Profile</button>
@@ -44,6 +44,14 @@
       <button class="tab-button active" onclick="openTab(event, 'Scheduled')">Scheduled</button>
       <button class="tab-button" onclick="openTab(event, 'Completed')">Completed</button>
     </div>
+  <div class="notification-icon">
+    <a href="{% url 'notifications' %}">
+        <img src="{% static 'images/notify.PNG' %}" alt="Notifications">
+        {% if request.user.notifications.unread.count > 0 %}
+            <span class="badge">{{ request.user.notifications.unread.count }}</span>
+        {% endif %}
+    </a>
+</div>
     <div id="Completed" class="tab-content">
         {% for booking in completed_bookings %}
         <div class="tab">
@@ -53,7 +61,8 @@
             <p>Service Provider: {{ booking.service.provider.user.username }}</p>
             <p>Status: {{ booking.status }}</p>
             <p>Special Request: {{ booking.special_request }}</p>
-            <button class="button">Review</button>
+            <button class="button write-review-btn" data-booking-id="{{ booking.id }}"type="submit" name="action">Review</button>
+
         </div>
         {% empty %}
         <p>No completed bookings.</p>
@@ -71,13 +80,22 @@
           <p>Service Provider: {{ booking.service.provider.user.username }}</p>
           <p>Status: {{ booking.status }}</p>
           <p>Special Request: {{ booking.special_request }}</p>
-          <button class="button">Cancel</button>
+          <form method="post" action="{% url 'momo_payment' %}">
+            {% csrf_token %}
+            <button class="button" type="submit" name="action" value="cancel_booking">Cancel</button>
+            
+            {% if booking.status == 'confirmed' %}
+            <button class="button" name="action" value="proceed_to_payment">Proceed to payment</button>
+            {% endif %}
+          </form>
+
       </div>
       {% empty %}
       <p>No scheduled bookings.</p>
       {% endfor %}
+    </div>
   </div>
-  </div>
+  
   <footer class="main-footer">
     <div class="container">
       <div class="upper-footer">

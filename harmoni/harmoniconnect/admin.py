@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, ServiceProvider, Client, Service, Booking, Review, Payment, EventDetails
+from .models import CustomUser, ServiceProvider, Client, Service, Booking, Review, Payment, EventDetails, Notification
 
 class ServiceProviderAdmin(admin.ModelAdmin):
     list_display = ('user', 'location')
@@ -40,3 +40,4 @@ admin.site.register(Booking, BookingAdmin)
 admin.site.register(Review)
 admin.site.register(Payment)
 admin.site.register(EventDetails)
+admin.site.register(Notification)

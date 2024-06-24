@@ -158,3 +158,12 @@ def update_provider_rating(sender, instance, **kwargs):
     new_rating = Review.objects.filter(booking__service__provider=provider).aggregate(Avg('rating'))['rating__avg']
     provider.average_rating = new_rating or 0.0  # Reset to 0.0 if no ratings
     provider.save()
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.recipient.username}"

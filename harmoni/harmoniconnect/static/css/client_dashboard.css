@@ -6,7 +6,7 @@ body {
 }
 .container {
     width: 95%;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     margin: 0 auto;
     padding: 20px;
     background-color: white;
@@ -83,11 +83,11 @@ body {
 .tab {
     width: 50%;
     padding: 20px;
-    border: 5px solid #ccc;
+    margin-bottom: 15px;
+    border: 2px solid #ccc;
     border-radius: 5px;
     flex: 1;
     padding: 10px;
-    cursor: pointer;
     background-color: #f4f4f4;
 }
 
@@ -113,13 +113,46 @@ body {
 }
 
 .tab-content {
-    display: none;
-    background-color: white;
+  display: none;
+  width: 95%;
+  padding: 20px;
+  background-color: #fff;
+  /* border: 1px solid #ddd; */
+  margin: auto;
 
 }
 
 .tab-content.active {
     display: block;
+}
+.notification-icon {
+  position: absolute;
+  top: 210px; /* Adjust top position as needed */
+  right: 60px; /* Adjust right position as needed */
+  /* z-index: 1000; Ensure it's above other content */
+}
+
+.notification-icon a {
+  text-decoration: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon img {
+  width: 40px; /* Adjust width and height as needed */
+  height: auto; /* Ensures image aspect ratio is maintained */
+}
+
+.badge {
+  position: absolute;
+  top: 10px;
+  right: -8px; /* Adjust position of the badge */
+  background-color: red; /* Badge background color */
+  color: white; /* Badge text color */
+  border-radius: 50%; /* Rounded badge */
+  padding: 4px 6px; /* Adjust padding */
+  font-size: 6px; /* Adjust font size */
 }
 .button{
     background-color: #22b8ef;
@@ -153,6 +186,7 @@ body {
     /* background: #f8f8f8; */
     padding: 20px 0;
     border-top: 1px solid black;
+    width: 100%;
   }
   
   .upper-footer {
