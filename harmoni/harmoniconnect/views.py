@@ -1,5 +1,6 @@
 import datetime
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from django.utils import timezone
 from django.views import generic
 from django.views.generic import TemplateView
@@ -13,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from .permissions import IsServiceProvider
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import Service, ServiceProvider, Booking, Review, Availability, Client
+from .models import Service, ServiceProvider, Booking, Review, Availability, Client, Notification
 from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy, reverse
 from .forms import ServiceProviderCreationForm, CustomUserCreationForm, BookingForm
@@ -375,21 +376,30 @@ def provider_dashboard(request, service_provider_id):
 @login_required
 def client_dashboard(request):
     client = get_object_or_404(Client, user=request.user)
-    scheduled_bookings = Booking.objects.filter(client=client, status='pending')
+    scheduled_bookings = Booking.objects.filter(client=client, status__in=['pending', 'confirmed'])
     completed_bookings = Booking.objects.filter(client=client, status='completed')
     #This is what you missed in your code to fetch reviews.
     reviews = Review.objects.filter(booking__client=client)  # Assuming you want to fetch reviews for the client
    
 
-    print(f"Client: {client}")
-    print(f"Scheduled Bookings: {scheduled_bookings}")
-    print(f"Completed Bookings: {completed_bookings}")
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        booking_id = request.POST.get('booking_id')  # Assuming how booking ID is passed in your template
+
+        if action == 'cancel_booking':
+            booking = get_object_or_404(Booking, id=booking_id)
+            booking.delete()
+            return redirect('client_dashboard')  # Redirect to the client dashboard after cancellation
+
+        elif action == 'proceed_to_payment':
+            booking = get_object_or_404(Booking, id=booking_id)
+            # Handle payment processing logic here
+            return HttpResponse("Proceed to payment logic goes here")
 
     context = {
         'client': client,
         'scheduled_bookings': scheduled_bookings,
         'completed_bookings': completed_bookings,
-        'reviews': reviews,
     }
     return render(request, 'client_dashboard.html', context)
 
@@ -425,20 +435,18 @@ def reviews(request):
   
     return render(request, 'reviews.html')
 
-logger = logging.getLogger(__name__)
+
 def book_service(request):
     if request.method == 'POST':
         form = BookingForm(request.POST)
-        if form.is_valid():
-            logger.info("Form is valid. Proceeding to save booking...")
-            
+        if form.is_valid():   
             booking = form.save(commit=False)
-            booking.client = Client.objects.get(user=request.user)
+            booking.client = Client.objects.get(user=request.user)  # Assuming you have a related Client model
             
             # Combine booking_date and event_time into a single timezone-aware datetime
-            
             booking.booking_date = timezone.make_aware(
-            timezone.datetime.combine(form.cleaned_data['booking_date'], form.cleaned_data['event_time']))
+                timezone.datetime.combine(form.cleaned_data['booking_date'], form.cleaned_data['event_time']))
+            
             # Save other form fields directly to the Booking instance
             booking.status = 'pending'
             booking.name = form.cleaned_data['name']
@@ -446,16 +454,82 @@ def book_service(request):
             booking.email = form.cleaned_data['email']
             booking.location = form.cleaned_data['location']
             
-            logger.info(f"Booking details: {booking}")
-            
             booking.save()
-            logger.info("Booking saved successfully!")
+            
+            # Create notification for service provider
+            provider_notification = Notification.objects.create(
+                recipient=booking.service.provider.user,
+                message=f"You have a new booking request (ID: {booking.id}). Please check your dashboard to review and approve."
+            )
+            messages.success(request, "Booking request sent successfully.")
             
             return render(request, 'booking_success.html', {'booking': booking})
-        else:
-            logger.error("Form is invalid")
-            logger.error(form.errors)
     else:
         form = BookingForm()
 
     return render(request, 'book_service.html', {'form': form})
+
+
+@login_required
+def approve_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    if booking.service.provider.user == request.user:
+        booking.status = 'confirmed'
+        booking.save()
+        
+        # Create notification for client
+        client_notification = Notification.objects.create(
+            recipient=booking.client.user,
+            message=f"Your booking with {{ booking.service.provider.user.username }} (ID: {booking.id}) has been confirmed. Please Check your dashboard and proceed to payment. Thank you for booking with us!"
+        )
+        messages.success(request, "Booking confirmed successfully.")
+        
+    return redirect('provider_dashboard', service_provider_id=request.user.service_provider.id)
+
+@login_required
+def decline_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    if booking.service.provider.user == request.user:
+        booking.status = 'declined'  # Assuming 'declined' is a valid status
+        booking.save()
+        
+        # Create notification for client
+        client_notification = Notification.objects.create(
+            recipient=booking.client.user,
+            message=f"Your booking with {{ booking.service.provider.user.username }} (ID: {booking.id}) has been declined. Explore more service providers to find the one that suits you."
+        )
+        messages.success(request, "Booking declined successfully.")
+        
+    return redirect('provider_dashboard', service_provider_id=request.user.service_provider.id)
+
+@login_required
+def complete_booking(request, booking_id):
+    booking = get_object_or_404(Booking, id=booking_id)
+    
+    if booking.service.provider.user == request.user:
+        booking.status = 'completed'
+        booking.save()
+        
+        # Create notification for client
+        client_notification = Notification.objects.create(
+            recipient=booking.client.user,
+            message=f"Your booking with {{ booking.service.provider.user.username }} (ID: {booking.id}) has been completed."
+        )
+        messages.success(request, "Booking completed successfully.")
+        
+    return redirect('provider_dashboard', service_provider_id=request.user.service_provider.id)
+
+
+
+    
+def notifications(request):
+    notifications = Notification.objects.filter(recipient=request.user, read=False)
+    return render(request, 'notify.html', {'notifications': notifications})
+
+def mark_notification_as_read(request, notification_id):
+    notification = Notification.objects.get(id=notification_id)
+    notification.read = True
+    notification.save()
+    return redirect('notifications')

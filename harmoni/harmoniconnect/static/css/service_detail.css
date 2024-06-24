@@ -48,42 +48,107 @@ body {
     text-decoration: none;
     color: #007bff;
 }
+  
+  .container {
+    width: 80%;
+    margin: 0 auto;
+  }
 
-.service-detail {
+  .service-detail {
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
-}
-
-.service-detail h1 {
-    text-align: center;
-    margin-bottom: 10px; /* Adjust margin for better spacing */
-}
-
-.service-detail img {
+  }
+  
+  .service-detail h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  
+  .service-image {
     width: 100%;
-    max-width: 100%; /* Adjust image width */
-    display: block;
-    margin: 0 auto 20px; /* Center align image with margin */
-    border-radius: 5px; /* Add border-radius for rounded corners */
-}
-
-.book-button,
-.inquiry-button {
-    width: 100%;
-    max-width: 200px;
-    margin: 20px auto;
-    padding: 10px 20px;
+    height: auto;
+    margin-bottom: 20px;
+  }
+  
+  .book-button {
     background-color: #007bff;
     color: #fff;
-    text-align: center;
-    text-decoration: none;
+    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    display: block; /* Ensure buttons are block elements */
-}
-
-
+    cursor: pointer;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .book-button a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .service-description,
+  .service-offer,
+  .service-pricing {
+    margin-bottom: 20px;
+  }
+  
+  .service-description h2,
+  .service-offer h2,
+  .reviews h2 {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  
+  .reviews {
+    margin-top: 30px;
+  }
+  
+  .review-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .review-item {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+    width: calc(50% - 20px);
+    display: flex;
+  }
+  
+  .review-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+  
+  .review-content {
+    flex: 1;
+  }
+  
+  .review-content h3 {
+    margin: 0;
+  }
+  
+  .rating {
+    color: #ffb400;
+  }
+  
+  .inquiry-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
 /* footer section */
 .main-footer {
     /* background: #f8f8f8; */
