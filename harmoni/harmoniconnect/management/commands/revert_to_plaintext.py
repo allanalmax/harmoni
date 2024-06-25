@@ -4,34 +4,38 @@ from harmoniconnect.models import ServiceProvider
 from json.decoder import JSONDecodeError
 
 class Command(BaseCommand):
-    help = 'Revert JSON fields to plain text'
+    help = 'Revert JSON fields to plain text format and handle corrupted data'
 
-    def handle(self, *args, **options):
+    def handle(self, *args, **kwargs):
         service_providers = ServiceProvider.objects.all()
         for provider in service_providers:
             try:
-                # Revert offers
-                if provider.offers and isinstance(provider.offers, str):
+                # Revert offers field
+                if self.is_json(provider.offers):
                     offers_list = json.loads(provider.offers)
-                    if isinstance(offers_list, list) and len(offers_list) > 0:
-                        provider.offers = offers_list[0]
-
-                # Revert pricing
-                if provider.pricing and isinstance(provider.pricing, str):
+                    provider.offers = '\n'.join(offers_list)
+                
+                # Revert pricing field
+                if self.is_json(provider.pricing):
                     pricing_list = json.loads(provider.pricing)
-                    if isinstance(pricing_list, list) and len(pricing_list) > 0:
-                        provider.pricing = pricing_list[0]
-
-                # Revert availability_description
-                if provider.availability_description and isinstance(provider.availability_description, str):
+                    provider.pricing = '\n'.join(pricing_list)
+                
+                # Revert availability_description field
+                if self.is_json(provider.availability_description):
                     availability_list = json.loads(provider.availability_description)
-                    if isinstance(availability_list, list) and len(availability_list) > 0:
-                        provider.availability_description = availability_list[0]
+                    provider.availability_description = '\n'.join(availability_list)
 
                 provider.save()
-                self.stdout.write(self.style.SUCCESS(f'Successfully reverted provider: {provider.name}'))
-            except JSONDecodeError:
-                # If JSONDecodeError occurs, assume the data is already in plain text format
-                self.stdout.write(self.style.WARNING(f'Provider {provider.name} already in plain text format. Skipping...'))
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f'Error processing provider {provider.name}: {e}'))
+                self.stdout.write(self.style.SUCCESS(f'Reverted fields for {provider.name}'))
+
+            except json.JSONDecodeError:
+                self.stdout.write(self.style.ERROR(f'Error decoding JSON for {provider.name}'))
+
+        self.stdout.write(self.style.SUCCESS('Successfully reverted all service providers'))
+
+    def is_json(self, myjson):
+        try:
+            json.loads(myjson)
+        except ValueError:
+            return False
+        return True

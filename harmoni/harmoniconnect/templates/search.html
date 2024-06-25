@@ -42,7 +42,7 @@
             <option value="{{ category_key }}">{{ category_name }}</option>
             {% endfor %}
           </select>
-         <button type="submit">Search</button>
+          <button type="submit">Search</button>
         </form>
       </div>
 
@@ -80,7 +80,7 @@
     <section class="dancer-listings">
       {% if error_message %}
       <div class="error-message">
-          {{ error_message }}
+        {{ error_message }}
       </div>
       {% endif %}
 
@@ -89,11 +89,11 @@
       <ul>
         {% for provider in search_results %}
         <article class="dancer-item">
-          <img src="{% static service.provider.image_url %}" alt="{{ service.provider.name }} image" />
+          <img src="{% static service.provider.image_url %}" alt="{{ provider.name }} image" />
           <div class="dancer-info">
-            <h3>{{ service.provider.name }}</h3>
-            <p class="description">{{ service.description }}</p>
-            <a href="{% url 'service_detail' service.provider.id %}" class="details-button">Details</a>
+            <h3>{{ provider.name }}</h3>
+            <p class="description">{{ provider.description }}</p>
+            <a href="{% url 'service_detail' provider.id %}" class="details-button">Details</a>
           </div>
         </article>
         {% endfor %}

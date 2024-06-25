@@ -39,7 +39,7 @@
       <a href="{% url 'search' %}" class="back-button">←</a>
       <h1>{{ service_provider.name }}</h1>
       <img src="{{ service_provider.image_url }}" alt="{{ service_provider.name }}" />
-      <button class="book-button"><a href="{% url 'book_service' %}">Book Service</a></button>
+      <button class="book-button"><a href="{% url 'book_service' service_provider.id %}">Book Service</a></button>
 
       <div class="service-description">
         <h2>About {{ service_provider.name }}</h2>
@@ -49,7 +49,7 @@
       <div class="service-offer">
         <h2>What We Offer:</h2>
         <ul>
-          {% for offer in offers %}
+          {% for offer in service_provider.offers %}
           <li>{{ offer }}</li>
           {% endfor %}
         </ul>
