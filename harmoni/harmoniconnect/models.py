@@ -193,3 +193,12 @@ class Availability(models.Model):
 
     def __str__(self):
         return f"Available from {self.start_time} to {self.end_time} for {self.provider.user.username}"
+
+class Notification(models.Model):
+    recipient = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notification for {self.recipient.username}"
