@@ -1,5 +1,6 @@
 import datetime
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.http import require_POST
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 from django.core.mail import send_mail
@@ -15,6 +16,9 @@ from .serializers import (
     BookingSerializer,  # noqa: F401
     ReviewSerializer,
 )
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from .models import Service, ServiceProvider, Booking, Review, Availability, Client, Notification
+from .serializers import ServiceSerializer, ServiceProviderSerializer, BookingSerializer, ReviewSerializer, BookingSerializer
 from django.urls import reverse_lazy, reverse
 from .forms import ServiceProviderCreationForm, CustomUserCreationForm, BookingForm
 from django.contrib import messages
@@ -358,6 +362,11 @@ def provider_dashboard(request, service_provider_id):
 @login_required
 def client_dashboard(request):
     client = get_object_or_404(Client, user=request.user)
+    scheduled_bookings = Booking.objects.filter(client=client, status__in=['pending', 'confirmed'])
+    completed_bookings = Booking.objects.filter(client=client, status='completed')
+    #This is what you missed in your code to fetch reviews.
+    reviews = Review.objects.filter(booking__client=client)  # Assuming you want to fetch reviews for the client
+   
     scheduled_bookings = Booking.objects.filter(client=client, status="pending")
     completed_bookings = Booking.objects.filter(client=client, status="completed")
     # This is what you missed in your code to fetch reviews.
@@ -365,11 +374,24 @@ def client_dashboard(request):
         booking__client=client
     )  # Assuming you want to fetch reviews for the client
 
-    print(f"Client: {client}")
-    print(f"Scheduled Bookings: {scheduled_bookings}")
-    print(f"Completed Bookings: {completed_bookings}")
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        booking_id = request.POST.get('booking_id')  # Assuming how booking ID is passed in your template
+
+        if action == 'cancel_booking':
+            booking = get_object_or_404(Booking, id=booking_id)
+            booking.delete()
+            return redirect('client_dashboard')  # Redirect to the client dashboard after cancellation
+
+        elif action == 'proceed_to_payment':
+            booking = get_object_or_404(Booking, id=booking_id)
+            # Handle payment processing logic here
+            return HttpResponse("Proceed to payment logic goes here")
 
     context = {
+        'client': client,
+        'scheduled_bookings': scheduled_bookings,
+        'completed_bookings': completed_bookings,
         "client": client,
         "scheduled_bookings": scheduled_bookings,
         "completed_bookings": completed_bookings,

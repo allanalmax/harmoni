@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Leave a Review</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{% static 'css/make_review.css' %}">
+</head>
+<body>
+
+  <div class="modal" id="reviewModal">
+    <div class="modal-content">
+      <h2>Write a Review</h2>
+      <div class="stars" id="stars">
+        <i class="fa fa-star" data-value="1"></i>
+        <i class="fa fa-star" data-value="2"></i>
+        <i class="fa fa-star" data-value="3"></i>
+        <i class="fa fa-star" data-value="4"></i>
+        <i class="fa fa-star" data-value="5"></i>
+      </div>
+      <textarea class="review-textarea" placeholder="Write your review here..."></textarea>
+      <input type="hidden" id="bookingIdInput">
+      <div class="modal-buttons">
+        <button class="cancel-button" id="cancelBtn">Cancel</button>
+        <button class="submit-button" id="submitBtn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/client_dashboard.js' %}"></script>
+</body>
+</html>

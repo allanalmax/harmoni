@@ -50,50 +50,79 @@
         <button class="tab-button" onclick="openTab('completed')">Completed</button>
       </section>
 
+      <div class="notification-icon">
+        <a href="{% url 'notifications' %}">
+            <img src="{% static 'images/notify.PNG' %}" alt="Notifications" class="notification-icon img">
+            {% if request.user.notifications.unread.count > 0 %}
+                <span class="badge">{{ request.user.notifications.unread.count }}</span>
+            {% endif %}
+        </a>
+    </div>
+
       <div id="scheduled" class="tab-content">
         {% for booking in scheduled_bookings %}
         <div class="tab">
           <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
+          <p><strong>Client Email:</strong> {{ booking.email }}</p>
+          <p><strong>Client Contact:</strong> {{ booking.contact }}</p>
           <p><strong>Service:</strong> {{ booking.service.name }}</p>
           <p><strong>Date & Time:</strong> {{ booking.booking_date }}</p>
           <p><strong>Location:</strong> {{ booking.service.location }}</p>
-          <p><strong>Client Name:</strong> {{ booking.client.name }}</p>
-          <p><strong>Status:</strong> Confirmed</p>
+          <p><strong>Status:</strong> {{ booking.status }}</p>
           <p><strong>Special Request:</strong> {{ booking.special_request }}</p>
-          <button class="button">Completed</button>
+          <form method="post" action="{% url 'complete_booking' booking.id %}">
+            {% csrf_token %}
+            <button class="button" type="submit">Completed</button></form>
         </div>
-        {% endfor %}
+        {% empty %}
+      <p>No scheduled bookings.</p>
+      {% endfor %}
       </div>
 
       <div id="completed" class="tab-content">
         {% for booking in completed_bookings %}
         <div class="tab">
           <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
+          <p><strong>Client Email:</strong> {{ booking.email }}</p>
+          <p><strong>Client Contact:</strong> {{ booking.contact }}</p>
           <p><strong>Service:</strong> {{ booking.service.name }}</p>
           <p><strong>Date & Time:</strong> {{ booking.booking_date }}</p>
           <p><strong>Location:</strong> {{ booking.service.location }}</p>
           <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
-          <p><strong>Status:</strong> Completed</p>
+          <p><strong>Status:</strong> {{ booking.status }}</p>
           <p><strong>Special Request:</strong> {{ booking.special_request }}</p>
           <a href="{% url 'reviews' %}"> <button class="button">Reviews</button></a>
         </div>
-        {% endfor %}
+        {% empty %}
+      <p>No completed bookings.</p>
+      {% endfor %}
       </div>
 
       <div id="pending" class="tab-content active">
         {% for booking in pending_bookings %}
         <div class="tab">
           <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
+          <p><strong>Client Email:</strong> {{ booking.email }}</p>
+          <p><strong>Client Contact:</strong> {{ booking.contact }}</p>
           <p><strong>Service:</strong> {{ booking.service.name }}</p>
           <p><strong>Date & Time:</strong> {{ booking.booking_date }}</p>
           <p><strong>Location:</strong> {{ booking.service.location }}</p>
-          <p><strong>Client Name:</strong> {{ booking.client.user.username }}</p>
-          <p><strong>Status:</strong> Pending Approval</p>
+          <p><strong>Status:</strong> {{ booking.status }}</p>
           <p><strong>Special Request:</strong> {{ booking.special_request }}</p>
-          <button class="button">Accept</button>
-          <button class="button">Decline</button>
+          <form method="post" action="{% url 'approve_booking' booking.id %}">
+            {% csrf_token %}
+            <button class="button" type="submit">Accept</button>
+        </form>
+        <form method="post" action="{% url 'decline_booking' booking.id %}">
+            {% csrf_token %}
+            <button class="button" type="submit">Decline</button> </form>
         </div>
-        {% endfor %}
+        {% empty %}
+      <p>No Pending bookings.</p>
+      {% endfor %}
       </div>
     </section>
   </main>

@@ -137,6 +137,9 @@ class Review(models.Model):
 
 @receiver(post_save, sender=Review)
 def update_provider_rating(sender, instance, **kwargs):
+    """
+    Update the ServiceProvider's average rating when a new review is added or updated.
+    """
     provider = instance.booking.service.provider
     new_rating = Review.objects.filter(booking__service__provider=provider).aggregate(
         Avg("rating")
