@@ -53,31 +53,32 @@
       <h2>Filter</h2>
       <form method="get" action="{% url 'search' %}">
         <div class="filter-form">
-          <div class="form-group">
+          <div class="form-group" class="budget-filter">
             <label for="min_budget">Minimum Budget*</label>
             <input type="number" id="min_budget" name="min_budget" class="form-control"
-              value="{{ request.GET.min_budget }}" required>
-          </div>
-          <div class="form-group">
+              value="{{ request.GET.min_budget }}">
             <label for="max_budget">Maximum Budget*</label>
             <input type="number" id="max_budget" name="max_budget" class="form-control"
-              value="{{ request.GET.max_budget }}" required>
+              value="{{ request.GET.max_budget }}">
           </div>
-          <div class="form-group">
-            <label for="availability">Availability*</label>
+
+          <div class="form-group" class="availability-filter">
+            <label for="availability">Start date*</label>
             <input type="date" id="start_time" name="start_time" class="form-control"
               value="{{ request.GET.start_time }}">
+            <label for="availability">End date*</label>
             <input type="date" id="end_time" name="end_time" class="form-control" value="{{ request.GET.end_time }}">
           </div>
+
           <div class="form-group">
             <label for="ratings">Ratings*</label>
             <select id="ratings" name="ratings">
               <option value="">Select Rating</option>
-              <option value="5" {% if request.GET.ratings == '5' %}selected{% endif %}>5 star</option>
-              <option value="4" {% if request.GET.ratings == '4' %}selected{% endif %}>4 star</option>
-              <option value="3" {% if request.GET.ratings == '3' %}selected{% endif %}>3 star</option>
-              <option value="2" {% if request.GET.ratings == '2' %}selected{% endif %}>2 star</option>
-            </select>
+              <option value="5" {% if request.GET.ratings|default_if_none:'' == '5' %}selected{% endif %}>5 star</option>
+              <option value="4" {% if request.GET.ratings|default_if_none:'' == '4' %}selected{% endif %}>4 star</option>
+              <option value="3" {% if request.GET.ratings|default_if_none:'' == '3' %}selected{% endif %}>3 star</option>
+              <option value="2" {% if request.GET.ratings|default_if_none:'' == '2' %}selected{% endif %}>2 star</option>
+          </select>
           </div>
         </div>
         <button type="submit" class="filter-button">Apply Filters</button>
@@ -96,7 +97,9 @@
       <ul>
         {% for provider in search_results %}
         <article class="dancer-item">
-          <img src="{% static provider.image_url %}" alt="{{ provider.name }} image" />
+          <img
+            src="{% if provider.image_url %}{% static provider.image_url %}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+            alt="{{ provider.name }} image" />
           <div class="dancer-info">
             <h3>{{ provider.name }}</h3>
             <p class="description">{{ provider.description }}</p>
@@ -111,7 +114,9 @@
       <ul>
         {% for provider in popular_providers %}
         <article class="dancer-item">
-          <img src="{% static provider.image_url %}" alt="{{ provider.name }} image" />
+          <img
+            src="{% if provider.image_url %}{% static provider.image_url %}{% else %}{% static 'images/default.jpg' %}{% endif %}"
+            alt="{{ provider.name }} image" />
           <div class="dancer-info">
             <h3>{{ provider.name }}</h3>
             <p class="description">{{ provider.description }}</p>

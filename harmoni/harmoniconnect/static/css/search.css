@@ -56,10 +56,11 @@ body {
   justify-content: center;
 }
 
-.search-bar input {
+.search-bar select {
   padding: 9px;
   margin-right: 10px;
-  width: 400px;
+  width: 200px;
+  border-radius: .5rem;
 }
 
 .search-bar button {
@@ -82,6 +83,11 @@ body {
 
 .form-group {
   margin-bottom: 15px;
+}
+
+.budget-filter, .availability-filter {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
@@ -151,9 +157,12 @@ body {
 }
 
 .dancer-item img {
-  max-width: 40%;
+  /* max-width: 40%; */
   display: block;
   margin-bottom: 15px;
+  width: 15rem;
+  height: 18rem;
+  border-radius: .5rem;
 }
 
 .dancer-info {

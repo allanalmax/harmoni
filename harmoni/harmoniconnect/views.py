@@ -425,6 +425,19 @@ def search(request):
 
             if not search_results.exists():
                 error_message = "No service providers found for this category."
+                popular_providers = ServiceProvider.objects.filter(
+                    average_rating__in=[4, 5]
+                ).order_by("-average_rating")[:5]
+                return render(
+                    request,
+                    "search.html",
+                    {
+                        "service_categories": Service.service_categories,
+                        "search_results": None,
+                        "popular_providers": popular_providers,
+                        "error_message": error_message,
+                    },
+                )
 
         except Exception as e:
             error_message = f"An error occurred: {str(e)}"
