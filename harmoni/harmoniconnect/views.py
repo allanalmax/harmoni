@@ -214,7 +214,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-
 # Generic views for user registration and static pages
 # class SignUpView(generic.CreateView):
 #     form_class = UserRegisterForm
@@ -613,15 +612,14 @@ def booking_success(request, booking_id):
 def approve_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
-
-    if request.method == 'POST':
+    if request.method == "POST":
         # Assuming service_provider is a related field on CustomUser
         if booking.service.provider.service_provider == request.user.service_provider:
             booking.status = "confirmed"
             booking.save()
 
             # Create notification for client
-            client_notification = Notification.objects.create(
+            client_notification = Notification.objects.create(  # noqa: F841
                 recipient=booking.client.user,
                 message=f"Your booking (ID: {booking.id}) has been confirmed. Please Check your dashboard and proceed to payment. Thank you for booking with us!",
             )
@@ -629,7 +627,10 @@ def approve_booking(request, booking_id):
 
             print(f"Booking ID {booking.id} confirmed by {request.user.username}")
 
-            return redirect("provider_dashboard", service_provider_id=request.user.service_provider.id)
+            return redirect(
+                "provider_dashboard",
+                service_provider_id=request.user.service_provider.id,
+            )
         else:
             print("User does not have permission to confirm this booking.")
             messages.error(request, "Permission denied to confirm this booking.")
@@ -637,7 +638,10 @@ def approve_booking(request, booking_id):
         print("GET request received, expecting POST.")
 
     # Handle any errors or redirect to appropriate page if not POST or permission denied
-    return redirect("provider_dashboard", service_provider_id=request.user.service_provider.id)
+    return redirect(
+        "provider_dashboard", service_provider_id=request.user.service_provider.id
+    )
+
 
 @login_required
 @csrf_protect
@@ -688,8 +692,8 @@ def notifications(request):
 def mark_notification_as_read(request, notification_id):
     notification = Notification.objects.get(id=notification_id)
     if notification.recipient == request.user:
-     notification.read = True
-     notification.save()
+        notification.read = True
+        notification.save()
     return redirect("notifications")
 
 
