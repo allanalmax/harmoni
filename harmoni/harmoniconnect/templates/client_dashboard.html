@@ -47,9 +47,9 @@
   <div class="notification-icon">
     <a href="{% url 'notifications' %}">
         <img src="{% static 'images/notify.PNG' %}" alt="Notifications">
-        {% if request.user.notifications.unread.count > 0 %}
-            <span class="badge">{{ request.user.notifications.unread.count }}</span>
-        {% endif %}
+        {% if request.user.notifications.unread %}
+                <span class="unread-indicator">{{ request.user.notifications.unread.count }}</span>
+                {% endif %}
     </a>
 </div>
     <div id="Completed" class="tab-content">
@@ -58,7 +58,7 @@
             <p>Booking ID: {{ booking.id }}</p>
             <p>Date & Time: {{ booking.booking_date|date:"jS F, g:i A" }}</p>
             <p>Location: {{ booking.location }}</p>
-            <p>Service Provider: {{ booking.service.provider.user.username }}</p>
+            <p>Service Provider: {{ booking.service.provider.username }}</p>
             <p>Status: {{ booking.status }}</p>
             <p>Special Request: {{ booking.special_request }}</p>
             <button class="button write-review-btn" data-booking-id="{{ booking.id }}"type="submit" name="action">Review</button>
@@ -77,7 +77,7 @@
           <p>Booking ID: {{ booking.id }}</p>
           <p>Date & Time: {{ booking.booking_date|date:"jS F, g:i A" }}</p>
           <p>Location: {{ booking.location }}</p>
-          <p>Service Provider: {{ booking.service.provider.user.username }}</p>
+          <p>Service Provider: {{ booking.service.provider.username }}</p>
           <p>Status: {{ booking.status }}</p>
           <p>Special Request: {{ booking.special_request }}</p>
           <form method="post" action="{% url 'momo_payment' %}">

@@ -151,7 +151,7 @@ class BookingForm(forms.ModelForm):
     class Meta:
         model = Booking
         fields = [
-            "service",
+            # "service",
             "booking_date",
             "event_time",
             "contact",

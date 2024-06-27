@@ -45,6 +45,24 @@ body {
     display: flex;
     justify-content: space-between;
 }
+.notification-actions.read {
+    /* Style for read notifications */
+    opacity: 0.7; /* Example: Reduce opacity for read notifications */
+}
+
+.notification-actions.unread {
+    /* Style for unread notifications */
+    background-color: #f0f0f0; /* Example: Light background for unread notifications */
+}
+
+.unread-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: red; /* Example: Red dot indicator for unread notifications */
+    display: inline-block;
+    border-radius: 50%; /* Make it circular */
+    margin-right: 5px;
+}
 
 .notification-details {
     flex: 1;

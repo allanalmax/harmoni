@@ -66,7 +66,7 @@ class BookingSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = '__all__'
+        fields = ['booking', 'rating', 'comment']
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=Review.objects.all(),
