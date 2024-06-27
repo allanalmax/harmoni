@@ -214,6 +214,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+
 # Generic views for user registration and static pages
 # class SignUpView(generic.CreateView):
 #     form_class = UserRegisterForm
@@ -400,13 +401,6 @@ def client_dashboard(request):
     }
     return render(request, "client_dashboard.html", context)
 
-    context = {
-        "client": client,
-        "scheduled_bookings": scheduled_bookings,
-        "completed_bookings": completed_bookings,
-    }
-    return render(request, "client_dashboard.html", context)
-
 
 def search(request):
     category = request.GET.get("category")
@@ -532,7 +526,7 @@ logger = logging.getLogger(__name__)
 
 
 def book_service(request, service_provider_id):
-    service_provider = ServiceProvider.objects.get(id=service_provider_id)
+    service_provider = ServiceProvider.objects.get(user_id=service_provider_id)
     client = get_object_or_404(Client, user=request.user)
     service = get_object_or_404(Service, provider=service_provider.user)
 
@@ -579,7 +573,7 @@ def book_service(request, service_provider_id):
 
             # Create notification for service provider
             provider_notification = Notification.objects.create(  # noqa: F841
-                recipient=booking.service.provider.user,
+                recipient=service_provider.user,
                 message=f"You have a new booking request (ID: {booking.id}). Please check your dashboard to review and approve.",
             )
             messages.success(request, "Booking request sent successfully.")
@@ -619,35 +613,45 @@ def booking_success(request, booking_id):
 def approve_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
-    if booking.service.provider.user == request.user:
-        booking.status = "confirmed"
-        booking.save()
 
-        # Create notification for client
-        client_notification = Notification.objects.create(  # noqa: F841
-            recipient=booking.client.user,
-            message=f"Your booking with {{ booking.service.provider.user.username }} (ID: {booking.id}) has been confirmed. Please Check your dashboard and proceed to payment. Thank you for booking with us!",
-        )
-        messages.success(request, "Booking confirmed successfully.")
+    if request.method == 'POST':
+        # Assuming service_provider is a related field on CustomUser
+        if booking.service.provider.service_provider == request.user.service_provider:
+            booking.status = "confirmed"
+            booking.save()
 
-    return redirect(
-        "provider_dashboard", service_provider_id=request.user.service_provider.id
-    )
+            # Create notification for client
+            client_notification = Notification.objects.create(
+                recipient=booking.client.user,
+                message=f"Your booking (ID: {booking.id}) has been confirmed. Please Check your dashboard and proceed to payment. Thank you for booking with us!",
+            )
+            messages.success(request, "Booking confirmed successfully.")
 
+            print(f"Booking ID {booking.id} confirmed by {request.user.username}")
+
+            return redirect("provider_dashboard", service_provider_id=request.user.service_provider.id)
+        else:
+            print("User does not have permission to confirm this booking.")
+            messages.error(request, "Permission denied to confirm this booking.")
+    else:
+        print("GET request received, expecting POST.")
+
+    # Handle any errors or redirect to appropriate page if not POST or permission denied
+    return redirect("provider_dashboard", service_provider_id=request.user.service_provider.id)
 
 @login_required
 @csrf_protect
 def decline_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
-    if booking.service.provider.user == request.user:
+    if booking.service.provider.service_provider == request.user.service_provider:
         booking.status = "declined"  # Assuming 'declined' is a valid status
         booking.save()
 
         # Create notification for client
         client_notification = Notification.objects.create(  # noqa: F841
             recipient=booking.client.user,
-            message=f"Your booking with {{ booking.service.provider.user.username }} (ID: {booking.id}) has been declined. Explore more service providers to find the one that suits you.",
+            message=f"Your booking (ID: {booking.id}) has been declined. Explore more service providers to find the one that suits you.",
         )
         messages.success(request, "Booking declined successfully.")
 
@@ -660,14 +664,14 @@ def decline_booking(request, booking_id):
 def complete_booking(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
 
-    if booking.service.provider.user == request.user:
+    if booking.service.provider.service_provider == request.user.service_provider:
         booking.status = "completed"
         booking.save()
 
         # Create notification for client
         client_notification = Notification.objects.create(  # noqa: F841
             recipient=booking.client.user,
-            message=f"Your booking with {{ booking.service.provider.user.username }} (ID: {booking.id}) has been completed.",
+            message=f"Your booking (ID: {booking.id}) has been completed.",
         )
         messages.success(request, "Booking completed successfully.")
 
@@ -677,14 +681,15 @@ def complete_booking(request, booking_id):
 
 
 def notifications(request):
-    notifications = Notification.objects.filter(recipient=request.user, read=False)
+    notifications = Notification.objects.filter(recipient=request.user)
     return render(request, "notify.html", {"notifications": notifications})
 
 
 def mark_notification_as_read(request, notification_id):
     notification = Notification.objects.get(id=notification_id)
-    notification.read = True
-    notification.save()
+    if notification.recipient == request.user:
+     notification.read = True
+     notification.save()
     return redirect("notifications")
 
 

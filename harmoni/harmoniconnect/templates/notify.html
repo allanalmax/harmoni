@@ -23,13 +23,16 @@
 <main>
     <div class="notifications-container">
         {% for notification in notifications %}
-        <div class="notification-item">
+        <div class="notification-item {% if notification.read %}read{% else %}unread{% endif %}">
             <div class="notification-details">
                 <p class="notification-message">{{ notification.message }}</p>
-                <p class="notification-date">{{ notification.date }}</p>
+                <p class="notification-date">{{ notification.timestamp|date:"F j, Y, g:i a" }}</p>
             </div>
             <div class="notification-actions">
-                <a href="#" class="action-link">Mark as Read</a>
+                {% if not notification.read %}
+                <span class="unread-indicator"></span>
+                {% endif %}
+                <a href="{% url 'mark_notification_as_read' notification.id %}" class="action-link">Mark as Read</a>
                 <!-- Add additional actions as needed -->
             </div>
         </div>

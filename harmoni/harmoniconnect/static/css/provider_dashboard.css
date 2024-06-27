@@ -155,6 +155,15 @@ body {
   font-size: 12px;
   margin-left: 5px; /* Adjust spacing between icon and badge */
 }
+.badge{
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    display: inline-block;
+    border-radius: 50%; 
+    margin-right: 5px;
+    font-size: 5px;
+}
 .button {
     background-color: #22b8ef;
     border-radius: 10px;

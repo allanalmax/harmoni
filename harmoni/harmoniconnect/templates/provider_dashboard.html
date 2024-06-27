@@ -53,7 +53,7 @@
       <div class="notification-icon">
         <a href="{% url 'notifications' %}">
             <img src="{% static 'images/notify.PNG' %}" alt="Notifications" class="notification-icon img">
-            {% if request.user.notifications.unread.count > 0 %}
+            {% if request.user.notifications.unread %}
                 <span class="badge">{{ request.user.notifications.unread.count }}</span>
             {% endif %}
         </a>
