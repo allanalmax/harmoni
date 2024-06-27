@@ -409,88 +409,105 @@ def client_dashboard(request):
 
 
 def search(request):
-    # Capture search criteria from request parameters
     category = request.GET.get("category")
+    min_budget = request.GET.get("min_budget")
+    max_budget = request.GET.get("max_budget")
     start_time = request.GET.get("start_time")
     end_time = request.GET.get("end_time")
+    ratings = request.GET.get("ratings")
 
-    # Initialize search results
     search_results = None
-    provider_query = None
+    error_message = None
 
-    if category or (start_time and end_time):
-        if category:
-            try:
-                service_query = Service.objects.filter(category=category)
+    # Category filter
+    if category:
+        try:
+            service_query = Service.objects.filter(category=category)
+            provider_ids = service_query.values_list(
+                "provider_id", flat=True
+            ).distinct()
+            search_results = ServiceProvider.objects.filter(
+                id__in=provider_ids
+            ).distinct()
 
-                provider_ids = service_query.values_list(
-                    "provider_id", flat=True
+            if not search_results.exists():
+                error_message = "No service providers found for this category."
+
+        except Exception as e:
+            error_message = f"An error occurred: {str(e)}"
+            search_results = None
+
+    # Budget filter
+    if min_budget and max_budget:
+        try:
+            min_budget = float(min_budget)
+            max_budget = float(max_budget)
+            services_within_budget = (
+                Service.objects.filter(price__gte=min_budget, price__lte=max_budget)
+                .values_list("provider_id", flat=True)
+                .distinct()
+            )
+
+            if search_results is not None:
+                search_results = search_results.filter(
+                    id__in=services_within_budget
+                ).distinct()
+            else:
+                search_results = ServiceProvider.objects.filter(
+                    id__in=services_within_budget
                 ).distinct()
 
-                provider_query = ServiceProvider.objects.filter(
-                    id__in=provider_ids
+        except Exception as e:
+            error_message = f"Error processing budget: {str(e)}"
+
+    # Availability filter
+    if start_time and end_time:
+        try:
+            start_time = datetime.strptime(start_time, "%Y-%m-%d")
+            end_time = datetime.strptime(end_time, "%Y-%m-%d")
+            available_providers = ServiceProvider.objects.filter(
+                services__start_time__gte=start_time,
+                services__end_time__lte=end_time,
+            ).distinct()
+
+            if search_results is not None:
+                search_results = search_results.filter(
+                    id__in=available_providers.values_list("id", flat=True)
                 ).distinct()
+            else:
+                search_results = available_providers
 
-                if not provider_query.exists():
-                    return render(
-                        request,
-                        "search.html",
-                        {
-                            "error_message": "No service providers found for this category.",
-                            "service_categories": Service.service_categories,
-                            "search_results": search_results,
-                            "popular_providers": ServiceProvider.objects.filter(
-                                is_featured=True
-                            )[:3],
-                        },
-                    )
+        except Exception as e:
+            error_message = f"Error processing availability: {str(e)}"
 
-            except Exception as e:
-                return render(
-                    request,
-                    "search.html",
-                    {
-                        "error_message": f"An error occurred: {str(e)}",
-                    },
-                )
+    # Ratings filter
+    if ratings:
+        try:
+            search_results = search_results.filter(average_rating__gte=float(ratings))
 
-        if start_time and end_time:
-            try:
-                start_time = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S")
-                end_time = datetime.strptime(end_time, "%Y-%m-%dT%H:%M:%S")
-                availability_query = ServiceProvider.objects.filter(
-                    availabilities__start_time__lte=end_time,
-                    availabilities__end_time__gte=start_time,
-                ).distinct()
+        except ValueError as e:
+            error_message = f"Invalid rating value: {str(e)}"
 
-                if search_results is not None:
-                    search_results = provider_query & availability_query
-                else:
-                    search_results = provider_query
-            except Exception as e:
-                return render(
-                    request,
-                    "search.html",
-                    {"error_message": f"Error processing availability: {str(e)}"},
-                )
-        if not search_results:
-            search_results = provider_query.distinct()
-
-    # Fetch Popular or Featured Providers (modify based on your logic)
-    popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]
+    # Default to popular providers if no filters are applied
+    if search_results is None:
+        popular_providers = ServiceProvider.objects.filter(
+            average_rating__in=[4, 5]
+        ).order_by("-average_rating")[:5]
+    else:
+        popular_providers = None
 
     service_categories = Service.service_categories
-    print(
-        f"Service Categories: {service_categories}"
-    )  # Debugging line to check if categories are being set
 
-    context = {
-        "search_results": search_results,
-        "popular_providers": popular_providers,
-        "service_categories": Service.service_categories,
-    }
-
-    return render(request, "search.html", context)
+    return render(
+        request,
+        "search.html",
+        {
+            "service_categories": service_categories,
+            "search_results": search_results,
+            "popular_providers": popular_providers,
+            "error_message": error_message,
+        },
+    )
 
 
 @login_required

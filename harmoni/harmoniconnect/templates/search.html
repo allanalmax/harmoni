@@ -39,7 +39,11 @@
           <select name="category" id="category">
             <option value="">Select a category</option>
             {% for category_key, category_name in service_categories %}
+            {% if request.GET.category|default_if_none:"" == category_key %}
+            <option value="{{ category_key }}" selected>{{ category_name }}</option>
+            {% else %}
             <option value="{{ category_key }}">{{ category_name }}</option>
+            {% endif %}
             {% endfor %}
           </select>
           <button type="submit">Search</button>
@@ -50,26 +54,29 @@
       <form method="get" action="{% url 'search' %}">
         <div class="filter-form">
           <div class="form-group">
-            <label for="budget">Budget*</label>
-            <select id="budget" name="budget">
-              <option value="1000000">1,000,000</option>
-              <option value="5000000">5,000,000</option>
-            </select>
+            <label for="min_budget">Minimum Budget*</label>
+            <input type="number" id="min_budget" name="min_budget" class="form-control"
+              value="{{ request.GET.min_budget }}" required>
           </div>
-
+          <div class="form-group">
+            <label for="max_budget">Maximum Budget*</label>
+            <input type="number" id="max_budget" name="max_budget" class="form-control"
+              value="{{ request.GET.max_budget }}" required>
+          </div>
           <div class="form-group">
             <label for="availability">Availability*</label>
-            <input type="date" id="availability" name="start_time" placeholder="start_date" />
-            <input type="date" id="availability_end" name="end_time" placeholder="end_date" />
+            <input type="date" id="start_time" name="start_time" class="form-control"
+              value="{{ request.GET.start_time }}">
+            <input type="date" id="end_time" name="end_time" class="form-control" value="{{ request.GET.end_time }}">
           </div>
-
           <div class="form-group">
             <label for="ratings">Ratings*</label>
             <select id="ratings" name="ratings">
-              <option value="5">5 star</option>
-              <option value="4">4 star</option>
-              <option value="3">3 star</option>
-              <option value="2">2 star</option>
+              <option value="">Select Rating</option>
+              <option value="5" {% if request.GET.ratings == '5' %}selected{% endif %}>5 star</option>
+              <option value="4" {% if request.GET.ratings == '4' %}selected{% endif %}>4 star</option>
+              <option value="3" {% if request.GET.ratings == '3' %}selected{% endif %}>3 star</option>
+              <option value="2" {% if request.GET.ratings == '2' %}selected{% endif %}>2 star</option>
             </select>
           </div>
         </div>
@@ -89,7 +96,7 @@
       <ul>
         {% for provider in search_results %}
         <article class="dancer-item">
-          <img src="{% static service.provider.image_url %}" alt="{{ provider.name }} image" />
+          <img src="{% static provider.image_url %}" alt="{{ provider.name }} image" />
           <div class="dancer-info">
             <h3>{{ provider.name }}</h3>
             <p class="description">{{ provider.description }}</p>
@@ -130,7 +137,7 @@
   <footer class="main-footer">
     <div class="container">
       <div class="upper-footer">
-        <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
+        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="footer-logo">
         <div class="footer-links">
           <div>
             <h4>Community</h4>
