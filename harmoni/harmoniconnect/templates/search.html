@@ -89,11 +89,11 @@
       <ul>
         {% for provider in search_results %}
         <article class="dancer-item">
-          <img src="{% static service.provider.image_url %}" alt="{{ service.provider.name }} image" />
+          <img src="{% static provider.image_url %}" alt="{{ provider.name }} image" />
           <div class="dancer-info">
             <h3>{{ service.provider.name }}</h3>
             <p class="description">{{ service.description }}</p>
-            <a href="{% url 'service_detail' service.provider.id %}" class="details-button">Details</a>
+            <a href="{% url 'service_detail' provider.id %}" class="details-button">Details</a>
           </div>
         </article>
         {% endfor %}

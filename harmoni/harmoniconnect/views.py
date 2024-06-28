@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django.views import generic
 from django.views.generic import TemplateView
 from django.views.decorators.csrf import csrf_protect
@@ -303,34 +304,55 @@ def search(request):
     category = request.GET.get('category')
     start_time = request.GET.get('start_time')
     end_time = request.GET.get('end_time')
+    min_budget = request.GET.get('min_budget')
+    max_budget = request.GET.get('max_budget')
+    min_rating = request.GET.get('min_rating')
 
     # Initialize search results
-    search_results = None
+    search_results = ServiceProvider.objects.all()
 
-    if category or (start_time and end_time):
-        # Filter providers based on category and availability
-        query = ServiceProvider.objects.object()
-        if category:
-            query = query.filter(users__services__category=category)
-        if start_time and end_time:
-            try:
-                start_time = datetime.strptime(start_time, '%Y-%m-%dT%H:%M:%S')
-                end_time = datetime.strptime(end_time, '%Y-%m-%dT%H:%M:%S')
-                query = query.filter(
-                    availabilities__start_time__lte=end_time,
-                    availabilities__end_time__gte=start_time
-                )
-            except Exception as e:
-                print(f"Error processing availability: {e}")
-        search_results = query.distinct()
+    if category:
+        search_results = search_results.filter(user__services__category=category)
+    
+    if start_time and end_time:
+        try:
+            start_time = parse_datetime(start_time)
+            end_time = parse_datetime(end_time)
+            search_results = search_results.filter(
+                availabilities__start_time__lte=end_time,
+                availabilities__end_time__gte=start_time
+            )
+        except Exception as e:
+            print(f"Error processing availability: {e}")
 
-    # Fetch Popular or Featured Providers (modify based on your logic)
+    if min_budget and max_budget:
+        try:
+            min_budget = float(min_budget)
+            max_budget = float(max_budget)
+            search_results = search_results.filter(
+                pricing__gte=min_budget,
+                pricing__lte=max_budget
+            )
+        except ValueError as e:
+            print(f"Error processing budget: {e}")
+
+    if min_rating:
+        try:
+            min_rating = float(min_rating)
+            search_results = search_results.filter(
+                average_rating__gte=min_rating
+            )
+        except ValueError as e:
+            print(f"Error processing rating: {e}")
+
+    # Fetch Popular or Featured Providers
     popular_providers = ServiceProvider.objects.filter(is_featured=True)[:3]
 
+    # Fetch Service Categories
     service_categories = Service.service_categories
 
     context = {
-        'search_results': search_results,
+        'search_results': search_results.distinct(),
         'popular_providers': popular_providers,
         'service_categories': service_categories
     }
@@ -339,14 +361,33 @@ def search(request):
 
 @login_required
 def service_detail(request, service_provider_id):
-    service_provider = ServiceProvider.objects.get(id=service_provider_id)
-    service_provider.offers = json.loads(service_provider.offers)
-    service_provider.pricing = json.loads(service_provider.pricing)
-    service_provider.availability_description = json.loads(service_provider.availability_description)
+    service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
     
+    try:
+        if service_provider.offers and service_provider.offers.strip():
+            service_provider.offers = json.loads(service_provider.offers)
+        else:
+            service_provider.offers = []
+            
+        if service_provider.pricing and service_provider.pricing.strip():
+            service_provider.pricing = json.loads(service_provider.pricing)
+        else:
+            service_provider.pricing = {}
+            
+        if service_provider.availability_description and service_provider.availability_description.strip():
+            service_provider.availability_description = json.loads(service_provider.availability_description)
+        else:
+            service_provider.availability_description = {}
+            
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON: {e}")
+        # Handle error or set to default empty dictionary/list
+        service_provider.offers = []
+        service_provider.pricing = {}
+        service_provider.availability_description = {}
+
     context = {'service_provider': service_provider}
     return render(request, 'service_detail.html', context)
-
 @login_required
 def provider_dashboard(request, service_provider_id):
     service_provider = get_object_or_404(ServiceProvider, id=service_provider_id)
