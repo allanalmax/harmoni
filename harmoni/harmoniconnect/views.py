@@ -462,6 +462,16 @@ def search(request):
                 search_results = ServiceProvider.objects.filter(
                     id__in=services_within_budget
                 ).distinct()
+                return render(
+                    request,
+                    "search.html",
+                    {
+                        "service_categories": Service.service_categories,
+                        "search_results": None,
+                        "popular_providers": popular_providers,
+                        "error_message": error_message,
+                    },
+                )
 
         except Exception as e:
             error_message = f"Error processing budget: {str(e)}"
