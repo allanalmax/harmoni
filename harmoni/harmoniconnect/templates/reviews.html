@@ -1,80 +1,86 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    {% load static %}
+{% load static %}
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <title>Reviews</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title>Reviews</title>
 </head>
+
 <body>
 
-    <header class="main-header">
-        <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
-        <div class="container">
-          <nav class="navigation">
-            <ul>
-              <li><a href="{% url 'home' %}">Home</a></li>
-              <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
-              <li><a href="{% url 'support' %}">Support</a></li>
-              <li><a href="{% url 'search' %}">Search</a></li>
-            </ul>
-          </nav>
-        </div>
-      </header>
-
-    <div class="reviews-container">
-        <h2>Your Reviews</h2>
-        <div class="review">
-            <img src="{% static 'images/review.png' %}" alt="Profile Picture">
-            <div class="review-text">
-                <h4>Mary Cleveland <span class="rating">★★★★☆</span></h4>
-                <p>A critical article or report, as in a periodical, on a book, play, recital, or the like; critique; evaluation. the process of going over a subject again in study or recitation in order to fix it in the memory or summarize the facts.</p>
-            </div>
-        </div>
+  <header class="main-header">
+    <img src="{% static 'images/logo.jpg' %}" alt="Logo" class="logo" />
+    <div class="container">
+      <nav class="navigation">
+        <ul>
+          <li><a href="{% url 'home' %}">Home</a></li>
+          <li><a href="{% url 'client_dashboard' %}">My Dashboard</a></li>
+          <li><a href="{% url 'support' %}">Support</a></li>
+          <li><a href="{% url 'search' %}">Search</a></li>
+        </ul>
+      </nav>
     </div>
-    <footer class="main-footer">
-        <div class="container">
-          <div class="upper-footer">
-              <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
-            <div class="footer-links">
-              <div>
-                <h4>Community</h4>
-                <ul>
-                  <li><a href="#featured-events">Featured events</a></li>
-                  <li><a href="#promotions">Promotions</a></li>
-                </ul>
-              </div>
-              <div>
-                <h4>Company</h4>
-                <ul>
-                  <li><a href="{% url 'home' %}">About us</a></li>
-                  <li><a href="{% url 'support' %}">Contact us</a></li>
-                </ul>
-              </div>
-              <div class="footer-auth">
-                <a href="{% url 'register' %}" class="button">Register</a>
-                {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="button">Log out</a>
-                {% else %}
-                <a href="{% url 'login' %}" class="button">Log in</a>
-                {% endif %}
-              </div>
-            </div>
+  </header>
+
+  <div class="reviews-container">
+    <h2>Your Reviews</h2>
+    <div class="review">
+      <img src="{% static 'images/review.png' %}" alt="Profile Picture">
+      <div class="review-text">
+        <h4>Mary Cleveland <span class="rating">★★★★☆</span></h4>
+        <p>A critical article or report, as in a periodical, on a book, play, recital, or the like; critique;
+          evaluation. the process of going over a subject again in study or recitation in order to fix it in the memory
+          or summarize the facts.</p>
+      </div>
+    </div>
+  </div>
+  <footer class="main-footer">
+    <div class="container">
+      <div class="upper-footer">
+        <img src="{% static '/images/logo.jpg' %}" alt="Logo" class="footer-logo">
+        <div class="footer-links">
+          <div>
+            <h4>Community</h4>
+            <ul>
+              <li><a href="#featured-events">Featured events</a></li>
+              <li><a href="#promotions">Promotions</a></li>
+            </ul>
           </div>
-          <div class="social-media">
-            <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
-            <div class="social-links">
-              <p>Follow us:</p>
-              <a href="#" class="fa fa-facebook"></a>
-              <a href="#" class="fa fa-twitter"></a>
-              <a href="#" class="fa fa-instagram"></a>
-            </div>
+          <div>
+            <h4>Company</h4>
+            <ul>
+              <li><a href="{% url 'home' %}">About us</a></li>
+              <li><a href="{% url 'support' %}">Contact us</a></li>
+            </ul>
+          </div>
+          <div class="footer-auth">
+            {% if not user.is_authenticated %}
+            <a href="{% url 'register' %}" class="button">Register</a>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="button">Log out</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Log in</a>
+            {% endif %}
           </div>
         </div>
-      </footer>
+      </div>
+      <div class="social-media">
+        <p>&copy; Harmoni, Inc. 2024, Making Celebrations Easier</p>
+        <div class="social-links">
+          <p>Follow us:</p>
+          <a href="#" class="fa fa-facebook"></a>
+          <a href="#" class="fa fa-twitter"></a>
+          <a href="#" class="fa fa-instagram"></a>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
+
 </html>

@@ -44,7 +44,7 @@ body {
 }
 .container {
     width: 95%;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     margin: 0 auto;
     padding: 20px;
     background-color: white;
@@ -81,6 +81,16 @@ body {
     margin-bottom: 20px;
     
 }
+.tab {
+  width: 50%;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  flex: 1;
+  padding: 10px;
+  background-color: #f4f4f4;
+}
 
 .tab-button {
     display: flex;
@@ -101,11 +111,13 @@ body {
 }
 
 .tab-content {
-    display: none;
-    padding: 20px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    margin: 20px;
+  display: none;
+  width: 95%;
+  padding: 20px;
+  background-color: #fff;
+  /* border: 1px solid #ddd; */
+  margin: auto;
+
 }
 
 .tab-content.active {
@@ -116,7 +128,42 @@ body {
     border: 1px solid #ddd;
     padding: 20px;
 }
+.notification-icon {
+  position: absolute;
+  top: 100px; /* Adjust top position as needed */
+  right: 40px; /* Adjust right position as needed */
+  /* z-index: 1000; Ensure it's above other content */
+}
 
+.notification-icon a {
+  text-decoration: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.notification-icon img {
+  width: 40px; /* Adjust width and height as needed */
+  height: auto; /* Ensures image aspect ratio is maintained */
+}
+
+.notification-icon .badge {
+  background-color: #22b8ef; /* Adjust background color */
+  color: white;
+  border-radius: 50%;
+  padding: 5px 10px;
+  font-size: 12px;
+  margin-left: 5px; /* Adjust spacing between icon and badge */
+}
+.badge{
+    width: 10px;
+    height: 10px;
+    background-color: red;
+    display: inline-block;
+    border-radius: 50%; 
+    margin-right: 5px;
+    font-size: 5px;
+}
 .button {
     background-color: #22b8ef;
     border-radius: 10px;
@@ -124,6 +171,7 @@ body {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
+    margin: 15px;
 }
 
 .main-footer {

@@ -1,6 +1,6 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+  {% load static %}
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -31,15 +31,15 @@
   </header>
 
   <div>
-    <a href="javascript:window.history.back();"><i class="fa fa-arrow-left"></i></a>
+    <a href="javascript:window.history.back();"><i class="fa fa-arrow-left back-button"></i></a>
   </div>
 
   <main class="container">
     <section class="service-detail">
       <a href="{% url 'search' %}" class="back-button">←</a>
       <h1>{{ service_provider.name }}</h1>
-      <img src="{{ service_provider.image_url }}" alt="{{ service_provider.name }}" />
-      <button class="book-button"><a href="{% url 'book_service' %}">Book Service</a></button>
+      <img src="{% static service_provider.image_url %}" alt="{{ service_provider.name }}" />
+      <button class="book-button"><a href="{% url 'book_service' service_provider.id %}">Book Service</a></button>
 
       <div class="service-description">
         <h2>About {{ service_provider.name }}</h2>

@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Failure</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <meta http-equiv="refresh" content="5; url={% url 'momo_payment' %}" />
+</head>
+<body>
+    <header>
+        <h1>Payment Failed</h1>
+    </header>
+    <main>
+        <p>Unfortunately, your payment could not be processed. Please try again.</p>
+        <p>You will be redirected to the payment page shortly.</p>
+    </main>
+    <footer>
+        <p>&copy; 2024 HarmoniConnect</p>
+    </footer>
+</body>
+</html>

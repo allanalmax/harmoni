@@ -1,0 +1,50 @@
+<!-- notifications.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="{% static 'css/notify.css' %}">
+    <!-- Add other CSS and JS links as needed -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<header>
+    <div class="header-container">
+        <h1>Notifications</h1>
+        <a href="javascript:window.history.back();" class="back-link">Back</a>
+    </div>
+</header>
+
+<main>
+    <div class="notifications-container">
+        {% for notification in notifications %}
+        <div class="notification-item {% if notification.read %}read{% else %}unread{% endif %}">
+            <div class="notification-details">
+                <p class="notification-message">{{ notification.message }}</p>
+                <p class="notification-date">{{ notification.timestamp|date:"F j, Y, g:i a" }}</p>
+            </div>
+            <div class="notification-actions">
+                {% if not notification.read %}
+                <span class="unread-indicator"></span>
+                {% endif %}
+                <a href="{% url 'mark_notification_as_read' notification.id %}" class="action-link">Mark as Read</a>
+                <!-- Add additional actions as needed -->
+            </div>
+        </div>
+        {% empty %}
+        <p>No notifications to display.</p>
+        {% endfor %}
+    </div>
+</main>
+
+<footer>
+    <!-- Footer content if any -->
+</footer>
+
+</body>
+</html>

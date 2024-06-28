@@ -12,6 +12,11 @@ body {
   justify-content: space-between;
   align-items: center;
   /* padding: 30px 50px; */
+  position: fixed;
+  z-index:1000;
+  align-items: center;
+  width: 100%;
+  margin-top: 0;
 }
 
 .logo {
@@ -44,6 +49,9 @@ body {
 
 
 /* Main section */
+main {
+  margin-top: 40px;
+}
 .filter-section {
   background-color: #f0f0f0;
   padding: 2rem 4rem;
@@ -56,10 +64,11 @@ body {
   justify-content: center;
 }
 
-.search-bar input {
+.search-bar select {
   padding: 9px;
   margin-right: 10px;
-  width: 400px;
+  width: 200px;
+  border-radius: .5rem;
 }
 
 .search-bar button {
@@ -76,8 +85,17 @@ body {
   justify-content: space-between;
 }
 
+.sec-filters {
+  display: flex;
+}
+
 .form-group {
   margin-bottom: 15px;
+}
+
+.budget-filter, .availability-filter {
+  display: flex;
+  flex-direction: column;
 }
 
 .form-group label {
@@ -102,6 +120,32 @@ body {
   cursor: pointer;
 }
 
+/* .search-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.category-group {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.filter-group {
+  display: flex;
+  justify-content: center;
+  gap: 20px; 
+  flex-wrap: wrap; 
+}
+
+.form-group {
+  flex: 1 1 200px; 
+}
+
+.btn {
+  margin-top: 20px;
+} */
+
 .dancer-listings {
   /* display: flex;
     flex-wrap: wrap; */
@@ -120,10 +164,18 @@ body {
   border-radius: 4px;
 }
 
+.dancer-info a {
+  text-decoration: none;
+  color: #fff;
+}
+
 .dancer-item img {
-  max-width: 40%;
+  /* max-width: 40%; */
   display: block;
   margin-bottom: 15px;
+  width: 15rem;
+  height: 18rem;
+  border-radius: .5rem;
 }
 
 .dancer-info {
@@ -197,6 +249,7 @@ body {
 .footer-links {
   display: flex;
   justify-content: space-around;
+  padding-right: 5px;
 }
 
 .footer-links div {
